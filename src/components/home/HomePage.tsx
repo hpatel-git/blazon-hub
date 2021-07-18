@@ -43,7 +43,7 @@ const styles = (theme: Theme) =>
 
 export interface ContentProps extends WithStyles<typeof styles> {}
 
-function Content(props: ContentProps) {
+function HomePage(props: ContentProps) {
   const { classes } = props;
 
   return (
@@ -95,4 +95,4 @@ function Content(props: ContentProps) {
   );
 }
 
-export default withStyles(styles)(Content);
+export default withStyles(styles)(HomePage);

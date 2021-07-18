@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import BlazonHub from './BlazonHub';
+import SaleseazeHub from './SaleseazeHub';
 import store from './redux/store';
 
 import { Provider } from 'react-redux';
@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BlazonHub />
+      <SaleseazeHub />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

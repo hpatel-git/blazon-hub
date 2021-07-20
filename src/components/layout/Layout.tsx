@@ -52,11 +52,12 @@ function Layout(props: PaperbaseProps) {
     eventType: AuthClientEvent,
     error?: AuthClientError
   ) => {
-    alert(eventType);
+    if (!keycloak.authenticated) {
+      keycloak.login();
+    }
     if (eventType === 'onAuthSuccess') {
       if (keycloak.authenticated) {
-        console.log(keycloak);
-        alert('Hey authencation done');
+        console.log(keycloak.tokenParsed);
       }
     }
   };

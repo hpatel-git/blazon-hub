@@ -1,8 +1,8 @@
 import React from 'react';
-import Layout from './components/layout/Layout';
+import Authentication from './components/auth/Authentication';
 
 function SaleseazeHub() {
-  return <Layout />;
+  return <Authentication />;
 }
 
 export default SaleseazeHub;

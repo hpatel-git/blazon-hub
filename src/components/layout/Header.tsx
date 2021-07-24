@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -14,12 +14,20 @@ import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import { deepPurple, deepOrange } from '@material-ui/core/colors';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { useAppSelector } from '../../redux/hooks';
+import { currentUserProfile } from '../../redux/auth/authSlice';
+
+import { useKeycloak } from '@react-keycloak/web';
 import {
   createStyles,
   Theme,
   withStyles,
   WithStyles
 } from '@material-ui/core/styles';
+import { KeycloakProfile } from 'keycloak-js';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -41,6 +49,14 @@ const styles = (theme: Theme) =>
         color: theme.palette.common.white
       }
     },
+    purple: {
+      color: theme.palette.getContrastText(deepPurple[500]),
+      backgroundColor: deepPurple[500]
+    },
+    orange: {
+      color: theme.palette.getContrastText(deepOrange[500]),
+      backgroundColor: deepOrange[500]
+    },
     button: {
       borderColor: lightColor
     }
@@ -52,9 +68,36 @@ interface HeaderProps extends WithStyles<typeof styles> {
 
 function Header(props: HeaderProps) {
   const { classes, onDrawerToggle } = props;
+  const { keycloak } = useKeycloak();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const currentUserProfile = useAppSelector((state) => state.auth.userProfile);
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleClose();
+    keycloak.logout();
+  };
 
   return (
     <React.Fragment>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
@@ -73,7 +116,7 @@ function Header(props: HeaderProps) {
             <Grid item xs />
             <Grid item>
               <Link className={classes.link} href="#" variant="body2">
-                Go to docs
+                Welcome, {currentUserProfile?.username}
               </Link>
             </Grid>
             <Grid item>
@@ -84,14 +127,20 @@ function Header(props: HeaderProps) {
               </Tooltip>
             </Grid>
             <Grid item>
-              <IconButton color="inherit" className={classes.iconButtonAvatar}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+              <IconButton
+                color="inherit"
+                className={classes.iconButtonAvatar}
+                onClick={handleClick}
+              >
+                <Avatar className={classes.orange}>
+                  {currentUserProfile?.username?.charAt(0).toUpperCase()}
+                </Avatar>
               </IconButton>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-      <AppBar
+      {/* <AppBar
         component="div"
         className={classes.secondaryBar}
         color="primary"
@@ -138,7 +187,7 @@ function Header(props: HeaderProps) {
           <Tab textColor="inherit" label="Templates" />
           <Tab textColor="inherit" label="Usage" />
         </Tabs>
-      </AppBar>
+      </AppBar> */}
     </React.Fragment>
   );
 }

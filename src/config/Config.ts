@@ -1,7 +1,7 @@
 const prod = {
   root: {
     KEYCLOAK_BASE_URL: 'https://keycloak.herokuapp.com',
-    REALM: 'company-services',
+    REALM: 'Saleseaze',
     CLIENT_ID: 'saleseaze-app'
   }
 };
@@ -9,7 +9,7 @@ const prod = {
 const dev = {
   root: {
     KEYCLOAK_BASE_URL: 'http://localhost:8080',
-    REALM: 'company-services',
+    REALM: 'Saleseaze',
     CLIENT_ID: 'saleseaze-app'
   }
 };

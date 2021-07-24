@@ -1,10 +1,12 @@
 import React from 'react';
-import Keycloak from 'keycloak-js';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { Config } from '../../config/Config';
 import { AuthClientError, AuthClientEvent } from '@react-keycloak/core';
 import Layout from '../layout/Layout';
 import AuthBackdrop from './AuthBackdrop';
+import { useAppDispatch } from '../../redux/hooks';
+import { updateUserProfile } from '../../redux/auth/authSlice';
 
 function Authentication() {
   const keycloak = Keycloak({
@@ -14,7 +16,7 @@ function Authentication() {
   });
 
   const loadingComponent = <AuthBackdrop />;
-
+  const dispatch = useAppDispatch();
   const initOptions = { pkceMethod: 'S256' };
 
   const handleOnEvent = async (
@@ -26,7 +28,15 @@ function Authentication() {
     }
     if (eventType === 'onAuthSuccess') {
       if (keycloak.authenticated) {
-        console.log(keycloak.tokenParsed);
+        keycloak
+          .loadUserProfile()
+          .then(function (profile: KeycloakProfile) {
+            console.log('Setting user name');
+            dispatch(updateUserProfile(profile));
+          })
+          .catch(function () {
+            keycloak.logout();
+          });
       }
     }
   };

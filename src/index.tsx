@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import SaleseazeHub from './SaleseazeHub';
-import store from './redux/store';
+import { store } from './redux/store';
 
 import { Provider } from 'react-redux';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
       <SaleseazeHub />
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );
 

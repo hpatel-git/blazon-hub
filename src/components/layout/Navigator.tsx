@@ -26,7 +26,7 @@ import { Omit } from '@material-ui/types';
 
 const categories = [
   {
-    id: 'Develop',
+    id: 'Social Media Marketing',
     children: [
       { id: 'Authentication', icon: <PeopleIcon />, active: true },
       { id: 'Connectors', icon: <DnsRoundedIcon /> },
@@ -112,7 +112,7 @@ function Navigator(props: NavigatorProps) {
               primary: classes.itemPrimary
             }}
           >
-            Project Overview
+            Overview
           </ListItemText>
         </ListItem>
         {categories.map(({ id, children }) => (

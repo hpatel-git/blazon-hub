@@ -3,10 +3,12 @@ import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { Config } from '../../config/Config';
 import { AuthClientError, AuthClientEvent } from '@react-keycloak/core';
-import Layout from '../layout/Layout';
 import AuthBackdrop from './AuthBackdrop';
 import { useAppDispatch } from '../../redux/hooks';
 import { updateUserProfile } from '../../redux/auth/authSlice';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import Admin from '../../layouts/Admin';
+import '../../assets/css/material-dashboard-react.css?v=1.6.0';
 
 function Authentication() {
   const keycloak = Keycloak({
@@ -46,9 +48,14 @@ function Authentication() {
       authClient={keycloak}
       initOptions={initOptions}
       LoadingComponent={loadingComponent}
-      onEvent={(event, error) => handleOnEvent(event, error)}
+      onEvent={(event: any, error: any) => handleOnEvent(event, error)}
     >
-      <Layout />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/admin" component={Admin} />
+          <Redirect from="/" to="/admin/dashboard" />
+        </Switch>
+      </BrowserRouter>
     </ReactKeycloakProvider>
   );
 }

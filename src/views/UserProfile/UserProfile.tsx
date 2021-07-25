@@ -15,6 +15,7 @@ import CardFooter from '../../components/Card/CardFooter';
 
 import avatar from '../../assets/img/faces/marc.jpg';
 import { createStyles } from '@material-ui/core';
+import { useAppSelector } from '../../redux/hooks';
 
 const styles = createStyles({
   cardCategoryWhite: {
@@ -37,6 +38,8 @@ const styles = createStyles({
 
 function UserProfile(props: any) {
   const { classes } = props;
+  const userProfile = useAppSelector((state) => state.auth.userProfile);
+  console.log(userProfile);
   return (
     <div>
       <GridContainer>
@@ -159,7 +162,7 @@ function UserProfile(props: any) {
             </CardAvatar>
             <CardBody profile={true}>
               <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
+              <h4 className={classes.cardTitle}>{userProfile?.firstName}</h4>
               <p className={classes.description}>
                 Don't be scared of the truth because we need to restart the
                 human foundation in truth And I love you like Kanye loves Kanye

@@ -25,26 +25,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import headerLinksStyle from '../../assets/jss/material-dashboard-react/components/headerLinksStyle';
 
-const StyledMenu = withStyles({
-  paper: {
-    border: '1px solid #d3d4d5'
-  }
-})((props: any) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center'
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center'
-    }}
-    {...props}
-  />
-));
-
 const StyledMenuItem = withStyles((theme) => ({
   root: {
     '&:focus': {
@@ -214,7 +194,17 @@ class HeaderLinks extends React.Component<Props, {}> {
           </Poppers>
         </div>
         <ClickAwayListener onClickAway={this.handleUserActionClose}>
-          <StyledMenu
+          <Menu
+            elevation={0}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center'
+            }}
             id="user-action-menu"
             anchorEl={this.userAnchorEl}
             keepMounted
@@ -227,7 +217,7 @@ class HeaderLinks extends React.Component<Props, {}> {
               </ListItemIcon>
               <ListItemText primary="Logout" />
             </StyledMenuItem>
-          </StyledMenu>
+          </Menu>
         </ClickAwayListener>
         <Button
           color={window.innerWidth > 959 ? 'transparent' : 'white'}

@@ -22,7 +22,6 @@ import logo from '../assets/img/reactlogo.png';
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
-      console.log(prop.layout);
       if (prop.layout === '/admin') {
         return (
           <Route

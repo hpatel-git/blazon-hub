@@ -45,8 +45,16 @@ const validationSchema = yup.object({
     .required('Email is required'),
   firstName: yup
     .string()
-    .min(8, 'FirstName should be of minimum 8 characters length')
-    .required('FirstName is required')
+    .min(3, 'FirstName should be of minimum 3 characters length')
+    .required('FirstName is required'),
+  lastName: yup
+    .string()
+    .min(3, 'Last should be of minimum 3 characters length')
+    .required('LastName is required'),
+  username: yup
+    .string()
+    .min(3, 'UserName should be of minimum 3 characters length')
+    .required('UserName is required')
 });
 
 function UserProfile(props: any) {
@@ -58,9 +66,10 @@ function UserProfile(props: any) {
       email: userProfile?.email,
       firstName: userProfile?.firstName,
       lastName: userProfile?.lastName,
-      userName: userProfile?.username
+      username: userProfile?.username
     },
     validationSchema: validationSchema,
+    validate: (values) => {},
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
     }
@@ -93,17 +102,33 @@ function UserProfile(props: any) {
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
-                      labelText="Username"
+                      labelText="User Name"
                       id="username"
+                      error={
+                        formik.touched.username &&
+                        Boolean(formik.errors.username)
+                      }
+                      errorMessage={formik.errors.username}
+                      inputProps={{
+                        name: 'username',
+                        label: 'User Name',
+                        value: `${formik.values.username}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.username && formik.errors.username
+                        }`
+                      }}
                       formControlProps={{
-                        fullWidth: true
+                        fullWidth: true,
+                        disabled: true
                       }}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
-                      labelText="Email address asdfasdf"
+                      labelText="Email address"
                       id="email"
+                      errorMessage={formik.errors.email}
                       error={
                         formik.touched.email && Boolean(formik.errors.email)
                       }
@@ -126,7 +151,21 @@ function UserProfile(props: any) {
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       labelText="First Name"
-                      id="first-name"
+                      id="firstName"
+                      errorMessage={formik.errors.firstName}
+                      error={
+                        formik.touched.firstName &&
+                        Boolean(formik.errors.firstName)
+                      }
+                      inputProps={{
+                        name: 'firstName',
+                        label: 'First Name',
+                        value: `${formik.values.firstName}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.firstName && formik.errors.firstName
+                        }`
+                      }}
                       formControlProps={{
                         fullWidth: true
                       }}
@@ -135,7 +174,21 @@ function UserProfile(props: any) {
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       labelText="Last Name"
-                      id="last-name"
+                      errorMessage={formik.errors.lastName}
+                      error={
+                        formik.touched.lastName &&
+                        Boolean(formik.errors.lastName)
+                      }
+                      id="lastName"
+                      inputProps={{
+                        name: 'lastName',
+                        label: 'Last Name',
+                        value: `${formik.values.lastName}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.lastName && formik.errors.lastName
+                        }`
+                      }}
                       formControlProps={{
                         fullWidth: true
                       }}
@@ -177,7 +230,7 @@ function UserProfile(props: any) {
                       About me
                     </InputLabel>
                     <CustomInput
-                      labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
+                      labelText=""
                       id="about-me"
                       formControlProps={{
                         fullWidth: true
@@ -191,7 +244,12 @@ function UserProfile(props: any) {
                 </GridContainer>
               </CardBody>
               <CardFooter>
-                <Button color="primary" type="submit">
+                <Button
+                  color="primary"
+                  type="submit"
+                  disabled={!formik.dirty}
+                  onClick={() => formik.submitForm()}
+                >
                   Update Profile
                 </Button>
               </CardFooter>

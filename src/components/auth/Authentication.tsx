@@ -33,7 +33,6 @@ function Authentication() {
         keycloak
           .loadUserProfile()
           .then(function (profile: KeycloakProfile) {
-            console.log('Setting user name');
             dispatch(updateUserProfile(profile));
           })
           .catch(function () {

@@ -5,7 +5,7 @@ import keycloakConfig from '../../config/keycloakConfig';
 import { AuthClientError, AuthClientEvent } from '@react-keycloak/core';
 import AuthBackdrop from './AuthBackdrop';
 import { useAppDispatch } from '../../redux/hooks';
-import { updateUserProfile, updateUserToken } from '../../redux/auth/authSlice';
+import { updateUserProfile } from '../../redux/auth/authSlice';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Admin from '../../layouts/Admin';
 import '../../assets/css/material-dashboard-react.css?v=1.6.0';
@@ -24,7 +24,6 @@ function Authentication() {
     }
     if (eventType === 'onAuthSuccess') {
       if (keycloakConfig.authenticated) {
-        dispatch(updateUserToken(keycloakConfig.token));
         keycloakConfig
           .loadUserProfile()
           .then(function (profile: KeycloakProfile) {

@@ -1,7 +1,7 @@
 import React from 'react';
-import Keycloak, { KeycloakProfile } from 'keycloak-js';
+import { KeycloakProfile } from 'keycloak-js';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
-import { Config } from '../../config/Config';
+import keycloakConfig from '../../config/keycloakConfig';
 import { AuthClientError, AuthClientEvent } from '@react-keycloak/core';
 import AuthBackdrop from './AuthBackdrop';
 import { useAppDispatch } from '../../redux/hooks';
@@ -11,12 +11,6 @@ import Admin from '../../layouts/Admin';
 import '../../assets/css/material-dashboard-react.css?v=1.6.0';
 
 function Authentication() {
-  const keycloak = Keycloak({
-    url: `${Config.root.KEYCLOAK_BASE_URL}/auth`,
-    realm: Config.root.REALM,
-    clientId: Config.root.CLIENT_ID
-  });
-
   const loadingComponent = <AuthBackdrop />;
   const dispatch = useAppDispatch();
   const initOptions = { pkceMethod: 'S256' };
@@ -25,19 +19,19 @@ function Authentication() {
     eventType: AuthClientEvent,
     error?: AuthClientError
   ) => {
-    if (!keycloak.authenticated) {
-      keycloak.login();
+    if (!keycloakConfig.authenticated) {
+      keycloakConfig.login();
     }
     if (eventType === 'onAuthSuccess') {
-      if (keycloak.authenticated) {
-        dispatch(updateUserToken(keycloak.token));
-        keycloak
+      if (keycloakConfig.authenticated) {
+        dispatch(updateUserToken(keycloakConfig.token));
+        keycloakConfig
           .loadUserProfile()
           .then(function (profile: KeycloakProfile) {
             dispatch(updateUserProfile(profile));
           })
           .catch(function () {
-            keycloak.logout();
+            keycloakConfig.logout();
           });
       }
     }
@@ -45,7 +39,7 @@ function Authentication() {
 
   return (
     <ReactKeycloakProvider
-      authClient={keycloak}
+      authClient={keycloakConfig}
       initOptions={initOptions}
       LoadingComponent={loadingComponent}
       onEvent={(event: any, error: any) => handleOnEvent(event, error)}

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../redux/store';
 import Config from '../config';
-import UserProfileUpdateRequest from './model/UserProfileUpdateRequest';
+import UserProfileUpdateRequest from './model/userProfileUpdateRequest';
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',

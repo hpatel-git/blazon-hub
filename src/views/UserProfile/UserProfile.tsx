@@ -16,9 +16,11 @@ import CardFooter from '../../components/Card/CardFooter';
 import avatar from '../../assets/img/faces/marc.jpg';
 import { createStyles } from '@material-ui/core';
 import { useAppSelector } from '../../redux/hooks';
+import { useUpdateMyProfileMutation } from '../../api/saleseazeApi';
 
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
 
 const styles = createStyles({
   cardCategoryWhite: {
@@ -58,25 +60,51 @@ const validationSchema = yup.object({
 });
 
 function UserProfile(props: any) {
+  const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
+
+  const handleUpdateMyProfile = async (
+    userProfile: UserProfileUpdateRequest
+  ) => {
+    try {
+      await updateMyProfile(userProfile).unwrap();
+    } catch {
+      alert('Could not update Profile');
+    }
+  };
   const { classes } = props;
   const userProfile = useAppSelector((state) => state.auth.userProfile);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
+      id: userProfile?.id,
       email: userProfile?.email,
       firstName: userProfile?.firstName,
       lastName: userProfile?.lastName,
-      username: userProfile?.username
+      username: userProfile?.username,
+      city: '',
+      country: '',
+      postalCode: ''
     },
     validationSchema: validationSchema,
     validate: (values) => {},
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      let updateProfileRequest = {
+        userId: values.id,
+        userName: values.username,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        city: values.city,
+        country: values.country,
+        postalCode: values.postalCode
+      };
+      handleUpdateMyProfile(updateProfileRequest);
     }
   });
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        {isLoading && <div>Submitting</div>}
         <GridContainer>
           <GridItem xs={12} sm={12} md={8}>
             <Card>

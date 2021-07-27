@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../redux/store';
 import Config from '../config';
+import UserProfileUpdateRequest from './model/UserProfileUpdateRequest';
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',
@@ -19,8 +20,16 @@ export const saleseazeApi = createApi({
   endpoints: (builder) => ({
     getMyProfile: builder.query({
       query: () => `profiles/me`
+    }),
+    updateMyProfile: builder.mutation<void, Partial<UserProfileUpdateRequest>>({
+      query: ({ ...body }) => ({
+        url: `profiles/me`,
+        method: 'PUT',
+        body
+      })
     })
   })
 });
 
-export const { useGetMyProfileQuery } = saleseazeApi;
+export const { useGetMyProfileQuery, useUpdateMyProfileMutation } =
+  saleseazeApi;

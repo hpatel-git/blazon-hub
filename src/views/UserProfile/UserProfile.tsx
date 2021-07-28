@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import InputLabel from '@material-ui/core/InputLabel';
+import Typography from '@material-ui/core/Typography';
+
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -21,6 +23,9 @@ import { useUpdateMyProfileMutation } from '../../api/saleseazeApi';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
+import Snackbar from '../../components/Snackbar/Snackbar';
+import AddAlert from '@material-ui/icons/AddAlert';
+import { generateUserExtraAttribute } from './userAttributeUtils';
 
 const styles = createStyles({
   cardCategoryWhite: {
@@ -61,18 +66,21 @@ const validationSchema = yup.object({
 
 function UserProfile(props: any) {
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
+  const [isUserProfileUpdated, setUserProfileUpdate] = useState(false);
 
   const handleUpdateMyProfile = async (
     userProfile: UserProfileUpdateRequest
   ) => {
     try {
       await updateMyProfile(userProfile).unwrap();
+      setUserProfileUpdate(true);
     } catch {
       alert('Could not update Profile');
     }
   };
   const { classes } = props;
   const userProfile = useAppSelector((state) => state.auth.userProfile);
+  const userExtraDetails = generateUserExtraAttribute(userProfile);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -81,9 +89,11 @@ function UserProfile(props: any) {
       firstName: userProfile?.firstName,
       lastName: userProfile?.lastName,
       username: userProfile?.username,
-      city: '',
-      country: '',
-      postalCode: ''
+      phoneNumber: userExtraDetails.phoneNumber,
+      city: userExtraDetails.city,
+      country: userExtraDetails.country,
+      postalCode: userExtraDetails.postalCode,
+      aboutMe: userExtraDetails.aboutMe
     },
     validationSchema: validationSchema,
     validate: (values) => {},
@@ -96,7 +106,9 @@ function UserProfile(props: any) {
         email: values.email,
         city: values.city,
         country: values.country,
-        postalCode: values.postalCode
+        postalCode: values.postalCode,
+        aboutMe: values.aboutMe,
+        phoneNumber: values.phoneNumber
       };
       handleUpdateMyProfile(updateProfileRequest);
     }
@@ -104,6 +116,15 @@ function UserProfile(props: any) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        <Snackbar
+          place="bc"
+          color="success"
+          icon={AddAlert}
+          message="User Profile Updated succesfully"
+          open={isUserProfileUpdated}
+          closeNotification={() => setUserProfileUpdate(false)}
+          close={true}
+        />
         {isLoading && <div>Submitting</div>}
         <GridContainer>
           <GridItem xs={12} sm={12} md={8}>
@@ -116,18 +137,6 @@ function UserProfile(props: any) {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <CustomInput
-                      labelText="Company (disabled)"
-                      id="company-disabled"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        disabled: true
-                      }}
-                    />
-                  </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       labelText="User Name"
@@ -149,6 +158,30 @@ function UserProfile(props: any) {
                       formControlProps={{
                         fullWidth: true,
                         disabled: true
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={5}>
+                    <CustomInput
+                      labelText="Phone Number"
+                      id="phoneNumber"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      errorMessage={formik.errors.phoneNumber}
+                      error={
+                        formik.touched.phoneNumber &&
+                        Boolean(formik.errors.phoneNumber)
+                      }
+                      inputProps={{
+                        name: 'phoneNumber',
+                        label: 'Phone Number',
+                        value: `${formik.values.phoneNumber}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.phoneNumber &&
+                          formik.errors.phoneNumber
+                        }`
                       }}
                     />
                   </GridItem>
@@ -227,7 +260,18 @@ function UserProfile(props: any) {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       labelText="City"
+                      errorMessage={formik.errors.city}
+                      error={formik.touched.city && Boolean(formik.errors.city)}
                       id="city"
+                      inputProps={{
+                        name: 'city',
+                        label: 'City',
+                        value: `${formik.values.city}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.city && formik.errors.city
+                        }`
+                      }}
                       formControlProps={{
                         fullWidth: true
                       }}
@@ -236,7 +280,20 @@ function UserProfile(props: any) {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       labelText="Country"
+                      errorMessage={formik.errors.country}
+                      error={
+                        formik.touched.country && Boolean(formik.errors.country)
+                      }
                       id="country"
+                      inputProps={{
+                        name: 'country',
+                        label: 'Country',
+                        value: `${formik.values.country}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.country && formik.errors.country
+                        }`
+                      }}
                       formControlProps={{
                         fullWidth: true
                       }}
@@ -245,11 +302,33 @@ function UserProfile(props: any) {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       labelText="Postal Code"
-                      id="postal-code"
+                      errorMessage={formik.errors.postalCode}
+                      error={
+                        formik.touched.postalCode &&
+                        Boolean(formik.errors.postalCode)
+                      }
+                      id="postalCode"
+                      inputProps={{
+                        name: 'postalCode',
+                        //label: 'postalCode',
+                        value: `${formik.values.postalCode}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.postalCode && formik.errors.postalCode
+                        }`
+                      }}
                       formControlProps={{
                         fullWidth: true
                       }}
                     />
+                  </GridItem>
+                </GridContainer>
+
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Typography variant="overline" display="block" gutterBottom>
+                      Company Details
+                    </Typography>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -259,13 +338,22 @@ function UserProfile(props: any) {
                     </InputLabel>
                     <CustomInput
                       labelText=""
-                      id="about-me"
+                      id="aboutMe"
+                      errorMessage={formik.errors.aboutMe}
+                      error={
+                        formik.touched.aboutMe && Boolean(formik.errors.aboutMe)
+                      }
                       formControlProps={{
                         fullWidth: true
                       }}
                       inputProps={{
                         multiline: true,
-                        rows: 5
+                        rows: 5,
+                        value: `${formik.values.aboutMe}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.aboutMe && formik.errors.aboutMe
+                        }`
                       }}
                     />
                   </GridItem>

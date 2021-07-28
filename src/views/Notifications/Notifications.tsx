@@ -233,7 +233,7 @@ class Notifications extends React.Component<Props, State> {
                   </Button>
                   <Snackbar
                     place="tr"
-                    color="info"
+                    color="success"
                     icon={AddAlert}
                     message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
                     open={this.state.tr}

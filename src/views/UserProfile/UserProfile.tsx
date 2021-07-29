@@ -28,7 +28,7 @@ import { useFormik } from 'formik';
 import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import AddAlert from '@material-ui/icons/AddAlert';
-import { generateUserExtraAttribute } from './userAttributeUtils';
+import { generateUserExtraAttribute } from '../../utils/userAttributeUtils';
 import keycloakConfig, {
   isSaleseazeManager,
   isSaleseazeSuperAdmin,

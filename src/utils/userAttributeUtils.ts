@@ -5,6 +5,7 @@ type UserExtraAttributes = {
   postalCode?: string[];
   aboutMe?: string[];
   phoneNumber?: string[];
+  isRegistrationComplete?: string[];
 };
 
 type UserExtraAttributesResponse = {
@@ -13,6 +14,7 @@ type UserExtraAttributesResponse = {
   postalCode: string;
   aboutMe: string;
   phoneNumber: string;
+  isRegistrationComplete: string;
 };
 
 const generateUserExtraAttribute = (
@@ -53,13 +55,34 @@ const generateUserExtraAttribute = (
     userAttributes.phoneNumber.length > 0
       ? userAttributes.phoneNumber[0]
       : '';
+  const isRegistrationComplete =
+    userAttributes &&
+    userAttributes.isRegistrationComplete &&
+    userAttributes.isRegistrationComplete.length > 0
+      ? userAttributes.isRegistrationComplete[0]
+      : '';
   return {
     city: city,
     country: country,
     postalCode: postalCode,
     aboutMe: aboutMe,
-    phoneNumber: phoneNumber
+    phoneNumber: phoneNumber,
+    isRegistrationComplete: isRegistrationComplete
   };
 };
 
-export { generateUserExtraAttribute };
+const isUserRegistrationComplete = (userProfile?: KeycloakProfile): boolean => {
+  let userAttributes = undefined;
+  for (const [key, value] of Object.entries(userProfile ? userProfile : '')) {
+    if (key === 'attributes') {
+      userAttributes = value as UserExtraAttributes;
+      break;
+    }
+  }
+  return userAttributes &&
+    userAttributes.isRegistrationComplete &&
+    userAttributes.isRegistrationComplete.length > 0
+    ? userAttributes.isRegistrationComplete[0] === 'true'
+    : false;
+};
+export { generateUserExtraAttribute, isUserRegistrationComplete };

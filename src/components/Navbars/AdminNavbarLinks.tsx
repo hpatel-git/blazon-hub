@@ -2,9 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-import MenuList from '@material-ui/core/MenuList';
 import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Hidden from '@material-ui/core/Hidden';
 import Poppers from '@material-ui/core/Popper';
@@ -24,6 +22,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import headerLinksStyle from '../../assets/jss/material-dashboard-react/components/headerLinksStyle';
+import NavbarAlerts from './NavbarAlerts';
 
 const StyledMenuItem = withStyles((theme) => ({
   root: {
@@ -125,7 +124,7 @@ class HeaderLinks extends React.Component<Props, {}> {
             className={classes.buttonLink}
           >
             <Notifications className={classes.icons} />
-            <span className={classes.notifications}>5</span>
+            <span className={classes.notifications}>1</span>
             <Hidden mdUp={true} implementation="css">
               <p className={classes.linkText}>
                 {/* onClick={this.handleClick} */}
@@ -153,42 +152,7 @@ class HeaderLinks extends React.Component<Props, {}> {
                     placement === 'bottom' ? 'center top' : 'center bottom'
                 }}
               >
-                <Paper>
-                  <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList role="menu">
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Mike John responded to your email
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You have 5 new tasks
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You're now friend with Andrew
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another Notification
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another One
-                      </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
+                <NavbarAlerts handleClose={this.handleClose} />
               </Grow>
             )}
           </Poppers>

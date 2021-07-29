@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
-import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 // core components
 import GridItem from '../../components/Grid/GridItem';
@@ -14,9 +14,9 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardAvatar from '../../components/Card/CardAvatar';
 import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
+import Primary from '../../components/Typography/Primary';
 
 import avatar from '../../assets/img/faces/marc.jpg';
-import { createStyles } from '@material-ui/core';
 import { useAppSelector } from '../../redux/hooks';
 import {
   useUpdateMyProfileMutation,
@@ -29,18 +29,48 @@ import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import AddAlert from '@material-ui/icons/AddAlert';
 import { generateUserExtraAttribute } from './userAttributeUtils';
-import keycloakConfig from '../../config/keycloakConfig';
+import keycloakConfig, {
+  isSaleseazeManager,
+  isSaleseazeSuperAdmin,
+  isSaleseazeUser
+} from '../../config/keycloakConfig';
 import { KeycloakProfile } from 'keycloak-js';
 import { updateUserProfile } from '../../redux/auth/authSlice';
 import { useAppDispatch } from '../../redux/hooks';
+import { grayColor } from '../../assets/jss/material-dashboard-react';
 
-const styles = createStyles({
+const useStyles = makeStyles((theme) => ({
   cardCategoryWhite: {
     color: 'rgba(255,255,255,.62)',
     margin: '0',
     fontSize: '14px',
     marginTop: '0',
     marginBottom: '0'
+  },
+  cardTitle: {
+    color: grayColor[2],
+    marginTop: '0px',
+    minHeight: 'auto',
+    fontWeight: 300,
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: '3px',
+    textDecoration: 'none',
+    '& small': {
+      color: grayColor[1],
+      fontWeight: 400,
+      lineHeight: 1
+    }
+  },
+  cardCategory: {
+    color: grayColor[0],
+    margin: '0',
+    fontSize: '14px',
+    marginTop: '0',
+    paddingTop: '10px',
+    marginBottom: '0'
+  },
+  divider: {
+    margin: theme.spacing(2, 0)
   },
   cardTitleWhite: {
     color: '#FFFFFF',
@@ -51,7 +81,8 @@ const styles = createStyles({
     marginBottom: '3px',
     textDecoration: 'none'
   }
-});
+}));
+
 const validationSchema = yup.object({
   email: yup
     .string()
@@ -72,6 +103,7 @@ const validationSchema = yup.object({
 });
 
 function UserProfile(props: any) {
+  const classes = useStyles();
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
   const { data, error } = useGetMyProfileQuery();
 
@@ -97,7 +129,7 @@ function UserProfile(props: any) {
       setIsError(true);
     }
   };
-  const { classes } = props;
+
   const userProfile = useAppSelector((state) => state.auth.userProfile);
   const userExtraDetails = generateUserExtraAttribute(userProfile);
   console.log(data, error);
@@ -114,11 +146,11 @@ function UserProfile(props: any) {
       country: userExtraDetails.country,
       postalCode: userExtraDetails.postalCode,
       aboutMe: userExtraDetails.aboutMe,
-      companyName: data?.company?.companyName,
-      companyAddress: data?.company?.address,
-      companyCity: data?.company?.city,
-      companyCountry: data?.company?.country,
-      companyPostalCode: data?.company?.postalCode
+      companyName: data?.company?.companyName || '',
+      companyAddress: data?.company?.address || '',
+      companyCity: data?.company?.city || '',
+      companyCountry: data?.company?.country || '',
+      companyPostalCode: data?.company?.postalCode || ''
     },
     validationSchema: validationSchema,
     validate: (values) => {},
@@ -139,14 +171,15 @@ function UserProfile(props: any) {
         updateProfileRequest.companyDetails = {
           companyName: values.companyName,
           address: values.companyAddress,
-          city: values.city,
-          country: values.country,
-          postalCode: values.postalCode
+          city: values.companyCity,
+          country: values.companyCountry,
+          postalCode: values.companyPostalCode
         };
       }
       handleUpdateMyProfile(updateProfileRequest);
     }
   });
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -330,7 +363,6 @@ function UserProfile(props: any) {
                       id="country"
                       inputProps={{
                         name: 'country',
-                        label: 'Country',
                         value: `${formik.values.country}`,
                         onChange: formik.handleChange,
                         helpertext: `${
@@ -366,26 +398,144 @@ function UserProfile(props: any) {
                     />
                   </GridItem>
                 </GridContainer>
-                {keycloakConfig.hasRealmRole('SALESEAZE_MANAGER') && (
-                  <React.Fragment>
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={12}>
-                        <Typography
-                          variant="overline"
-                          display="block"
-                          gutterBottom
-                        >
-                          Company Details
-                        </Typography>
-                      </GridItem>
-                    </GridContainer>
-                  </React.Fragment>
-                )}
+                <Divider className={classes.divider} />
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Primary>Company Details</Primary>
+                  </GridItem>
+                </GridContainer>
+                <GridContainer mt={0}>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      labelText="Company Name"
+                      id="companyName"
+                      errorMessage={formik.errors.companyName}
+                      error={
+                        formik.touched.companyName &&
+                        Boolean(formik.errors.companyName)
+                      }
+                      inputProps={{
+                        name: 'companyName',
+                        value: `${formik.values.companyName}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.companyName &&
+                          formik.errors.companyName
+                        }`
+                      }}
+                      formControlProps={{
+                        fullWidth: true,
+                        disabled: !isSaleseazeManager()
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      labelText="Address"
+                      errorMessage={formik.errors.companyAddress}
+                      error={
+                        formik.touched.companyAddress &&
+                        Boolean(formik.errors.companyAddress)
+                      }
+                      id="companyAddress"
+                      inputProps={{
+                        name: 'companyAddress',
+                        value: `${formik.values.companyAddress}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.companyAddress &&
+                          formik.errors.companyAddress
+                        }`
+                      }}
+                      formControlProps={{
+                        fullWidth: true,
+                        disabled: !isSaleseazeManager()
+                      }}
+                    />
+                  </GridItem>
+                </GridContainer>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      labelText="City"
+                      errorMessage={formik.errors.companyCity}
+                      error={
+                        formik.touched.companyCity &&
+                        Boolean(formik.errors.companyCity)
+                      }
+                      id="companyCity"
+                      inputProps={{
+                        name: 'companyCity',
+                        value: `${formik.values.companyCity}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.companyCity &&
+                          formik.errors.companyCity
+                        }`
+                      }}
+                      formControlProps={{
+                        fullWidth: true,
+                        disabled: !isSaleseazeManager()
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      labelText="Country"
+                      errorMessage={formik.errors.companyCountry}
+                      error={
+                        formik.touched.companyCountry &&
+                        Boolean(formik.errors.companyCountry)
+                      }
+                      id="companyCountry"
+                      inputProps={{
+                        name: 'companyCountry',
+                        value: `${formik.values.companyCountry}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.companyCountry &&
+                          formik.errors.companyCountry
+                        }`
+                      }}
+                      formControlProps={{
+                        fullWidth: true,
+                        disabled: !isSaleseazeManager()
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      labelText="Postal Code"
+                      errorMessage={formik.errors.companyPostalCode}
+                      error={
+                        formik.touched.companyPostalCode &&
+                        Boolean(formik.errors.companyPostalCode)
+                      }
+                      id="companyPostalCode"
+                      inputProps={{
+                        name: 'companyPostalCode',
+                        value: `${formik.values.companyPostalCode}`,
+                        onChange: formik.handleChange,
+                        helpertext: `${
+                          formik.touched.companyPostalCode &&
+                          formik.errors.companyPostalCode
+                        }`
+                      }}
+                      formControlProps={{
+                        fullWidth: true,
+                        disabled: !isSaleseazeManager()
+                      }}
+                    />
+                  </GridItem>
+                </GridContainer>
 
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <InputLabel style={{ color: '#AAAAAA' }}>
                       About me
+                      {isSaleseazeManager() && (
+                        <React.Fragment> OR company</React.Fragment>
+                      )}
                     </InputLabel>
                     <CustomInput
                       labelText=""
@@ -430,13 +580,19 @@ function UserProfile(props: any) {
                 </a>
               </CardAvatar>
               <CardBody profile={true}>
-                <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
+                <h6 className={classes.cardCategory}>
+                  {isSaleseazeManager() && (
+                    <React.Fragment>Saleseaze Manager</React.Fragment>
+                  )}
+                  {isSaleseazeSuperAdmin() && (
+                    <React.Fragment>Saleseaze Super Admin</React.Fragment>
+                  )}
+                  {isSaleseazeUser() && (
+                    <React.Fragment>Saleseaze User</React.Fragment>
+                  )}
+                </h6>
                 <h4 className={classes.cardTitle}>{userProfile?.firstName}</h4>
-                <p className={classes.description}>
-                  Don't be scared of the truth because we need to restart the
-                  human foundation in truth And I love you like Kanye loves
-                  Kanye I love Rick Owens’ bed design but the back is...
-                </p>
+                <p>{formik.values.aboutMe}</p>
                 <Button color="primary" round={true}>
                   Follow
                 </Button>
@@ -449,4 +605,4 @@ function UserProfile(props: any) {
   );
 }
 
-export default withStyles(styles)(UserProfile);
+export default UserProfile;

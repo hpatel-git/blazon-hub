@@ -105,7 +105,7 @@ const validationSchema = yup.object({
 function UserProfile(props: any) {
   const classes = useStyles();
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
-  const { data, error } = useGetMyProfileQuery();
+  const { data, error, refetch } = useGetMyProfileQuery();
 
   const [isUserProfileUpdated, setUserProfileUpdate] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -125,6 +125,7 @@ function UserProfile(props: any) {
         .catch(function () {
           keycloakConfig.logout();
         });
+      refetch();
     } catch {
       setIsError(true);
     }

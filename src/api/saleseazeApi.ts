@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import keycloakConfig from '../config/keycloakConfig';
 import Config from '../config';
 import UserProfileUpdateRequest from './model/userProfileUpdateRequest';
+import UserProfileResponse from './model/userProfileResponse';
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',
@@ -18,7 +19,7 @@ export const saleseazeApi = createApi({
     }
   }),
   endpoints: (builder) => ({
-    getMyProfile: builder.query({
+    getMyProfile: builder.query<UserProfileResponse, void>({
       query: () => `profiles/me`
     }),
     updateMyProfile: builder.mutation<void, Partial<UserProfileUpdateRequest>>({

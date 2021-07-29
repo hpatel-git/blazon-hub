@@ -18,7 +18,10 @@ import CardFooter from '../../components/Card/CardFooter';
 import avatar from '../../assets/img/faces/marc.jpg';
 import { createStyles } from '@material-ui/core';
 import { useAppSelector } from '../../redux/hooks';
-import { useUpdateMyProfileMutation } from '../../api/saleseazeApi';
+import {
+  useUpdateMyProfileMutation,
+  useGetMyProfileQuery
+} from '../../api/saleseazeApi';
 
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -26,6 +29,10 @@ import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import AddAlert from '@material-ui/icons/AddAlert';
 import { generateUserExtraAttribute } from './userAttributeUtils';
+import keycloakConfig from '../../config/keycloakConfig';
+import { KeycloakProfile } from 'keycloak-js';
+import { updateUserProfile } from '../../redux/auth/authSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 const styles = createStyles({
   cardCategoryWhite: {
@@ -66,7 +73,11 @@ const validationSchema = yup.object({
 
 function UserProfile(props: any) {
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
+  const { data, error } = useGetMyProfileQuery();
+
   const [isUserProfileUpdated, setUserProfileUpdate] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleUpdateMyProfile = async (
     userProfile: UserProfileUpdateRequest
@@ -74,13 +85,22 @@ function UserProfile(props: any) {
     try {
       await updateMyProfile(userProfile).unwrap();
       setUserProfileUpdate(true);
+      keycloakConfig
+        .loadUserProfile()
+        .then(function (profile: KeycloakProfile) {
+          dispatch(updateUserProfile(profile));
+        })
+        .catch(function () {
+          keycloakConfig.logout();
+        });
     } catch {
-      alert('Could not update Profile');
+      setIsError(true);
     }
   };
   const { classes } = props;
   const userProfile = useAppSelector((state) => state.auth.userProfile);
   const userExtraDetails = generateUserExtraAttribute(userProfile);
+  console.log(data, error);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -93,12 +113,17 @@ function UserProfile(props: any) {
       city: userExtraDetails.city,
       country: userExtraDetails.country,
       postalCode: userExtraDetails.postalCode,
-      aboutMe: userExtraDetails.aboutMe
+      aboutMe: userExtraDetails.aboutMe,
+      companyName: data?.company?.companyName,
+      companyAddress: data?.company?.address,
+      companyCity: data?.company?.city,
+      companyCountry: data?.company?.country,
+      companyPostalCode: data?.company?.postalCode
     },
     validationSchema: validationSchema,
     validate: (values) => {},
     onSubmit: (values) => {
-      let updateProfileRequest = {
+      let updateProfileRequest: UserProfileUpdateRequest = {
         userId: values.id,
         userName: values.username,
         firstName: values.firstName,
@@ -110,6 +135,15 @@ function UserProfile(props: any) {
         aboutMe: values.aboutMe,
         phoneNumber: values.phoneNumber
       };
+      if (keycloakConfig.hasRealmRole('SALESEAZE_MANAGER')) {
+        updateProfileRequest.companyDetails = {
+          companyName: values.companyName,
+          address: values.companyAddress,
+          city: values.city,
+          country: values.country,
+          postalCode: values.postalCode
+        };
+      }
       handleUpdateMyProfile(updateProfileRequest);
     }
   });
@@ -123,6 +157,15 @@ function UserProfile(props: any) {
           message="User Profile Updated succesfully"
           open={isUserProfileUpdated}
           closeNotification={() => setUserProfileUpdate(false)}
+          close={true}
+        />
+        <Snackbar
+          place="bc"
+          color="danger"
+          icon={AddAlert}
+          message="User Profile Updated failed"
+          open={isError}
+          closeNotification={() => setIsError(false)}
           close={true}
         />
         {isLoading && <div>Submitting</div>}
@@ -323,14 +366,22 @@ function UserProfile(props: any) {
                     />
                   </GridItem>
                 </GridContainer>
+                {keycloakConfig.hasRealmRole('SALESEAZE_MANAGER') && (
+                  <React.Fragment>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <Typography
+                          variant="overline"
+                          display="block"
+                          gutterBottom
+                        >
+                          Company Details
+                        </Typography>
+                      </GridItem>
+                    </GridContainer>
+                  </React.Fragment>
+                )}
 
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={12}>
-                    <Typography variant="overline" display="block" gutterBottom>
-                      Company Details
-                    </Typography>
-                  </GridItem>
-                </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <InputLabel style={{ color: '#AAAAAA' }}>

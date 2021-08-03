@@ -9,7 +9,7 @@ import Notifications from '@material-ui/icons/Notifications';
 // core components/views for Admin layout
 import DashboardPage from './views/Dashboard/Dashboard';
 import UserProfile from './views/UserProfile/UserProfile';
-import TableList from './views/TableList/TableList';
+import SocialAccounts from './views/SocialAccounts/SocialAccounts';
 import Typography from './views/Typography/Typography';
 import Icons from './views/Icons/Icons';
 import Maps from './views/Maps/Maps';
@@ -34,7 +34,7 @@ const dashboardRoutes = [
     path: '/social_accounts',
     name: 'Social Accounts',
     icon: AccountTreeIcon,
-    component: TableList,
+    component: SocialAccounts,
     layout: '/admin'
   },
   {

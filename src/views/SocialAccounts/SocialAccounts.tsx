@@ -9,6 +9,9 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import { createStyles } from '@material-ui/core';
+import { useGetMyProfileQuery } from '../../api/saleseazeApi';
+import Success from '../../components/Typography/Success';
+import Info from '../../components/Typography/Info';
 
 const styles = createStyles({
   cardCategoryWhite: {
@@ -40,16 +43,20 @@ const styles = createStyles({
   }
 });
 
-function TableList(props: any) {
+function SocialAccounts(props: any) {
   const { classes } = props;
+  const { data, isLoading } = useGetMyProfileQuery();
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>
+              Connected Social Accounts
+            </h4>
             <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
+              Here is a list of all connected social accounts for
+              {!isLoading && data && <Info>{data.company?.companyName}</Info>}
             </p>
           </CardHeader>
           <CardBody>
@@ -68,46 +75,8 @@ function TableList(props: any) {
           </CardBody>
         </Card>
       </GridItem>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card plain={true}>
-          <CardHeader plain={true} color="primary">
-            <h4 className={classes.cardTitleWhite}>
-              Table on Plain Background
-            </h4>
-            <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p>
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={['ID', 'Name', 'Country', 'City', 'Salary']}
-              tableData={[
-                ['1', 'Dakota Rice', '$36,738', 'Niger', 'Oud-Turnhout'],
-                ['2', 'Minerva Hooper', '$23,789', 'Curaçao', 'Sinaai-Waas'],
-                ['3', 'Sage Rodriguez', '$56,142', 'Netherlands', 'Baileux'],
-                [
-                  '4',
-                  'Philip Chaney',
-                  '$38,735',
-                  'Korea, South',
-                  'Overland Park'
-                ],
-                [
-                  '5',
-                  'Doris Greene',
-                  '$63,542',
-                  'Malawi',
-                  'Feldkirchen in Kärnten'
-                ],
-                ['6', 'Mason Porter', '$78,615', 'Chile', 'Gloucester']
-              ]}
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
     </GridContainer>
   );
 }
 
-export default withStyles(styles)(TableList);
+export default withStyles(styles)(SocialAccounts);

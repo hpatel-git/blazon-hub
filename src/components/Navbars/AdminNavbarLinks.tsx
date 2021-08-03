@@ -1,16 +1,13 @@
 import React from 'react';
-import classNames from 'classnames';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-import Grow from '@material-ui/core/Grow';
+
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Hidden from '@material-ui/core/Hidden';
-import Poppers from '@material-ui/core/Popper';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 // @material-ui/icons
 import Person from '@material-ui/icons/Person';
-import Notifications from '@material-ui/icons/Notifications';
 import Dashboard from '@material-ui/icons/Dashboard';
 import Search from '@material-ui/icons/Search';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -111,51 +108,7 @@ class HeaderLinks extends React.Component<Props, {}> {
           </Hidden>
         </Button>
         <div className={classes.manager}>
-          <Button
-            buttonRef={(node: any) => {
-              this.anchorEl = node;
-            }}
-            color={window.innerWidth > 959 ? 'transparent' : 'white'}
-            justIcon={window.innerWidth > 959}
-            simple={!(window.innerWidth > 959)}
-            aria-owns={open ? 'menu-list-grow' : null}
-            aria-haspopup="true"
-            onClick={this.handleToggle}
-            className={classes.buttonLink}
-          >
-            <Notifications className={classes.icons} />
-            <span className={classes.notifications}>1</span>
-            <Hidden mdUp={true} implementation="css">
-              <p className={classes.linkText}>
-                {/* onClick={this.handleClick} */}
-                Notification
-              </p>
-            </Hidden>
-          </Button>
-          <Poppers
-            open={open}
-            anchorEl={this.anchorEl}
-            transition={true}
-            disablePortal={true}
-            className={
-              classNames({ [classes.popperClose]: !open }) +
-              ' ' +
-              classes.pooperNav
-            }
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                // id="menu-list-grow"
-                style={{
-                  transformOrigin:
-                    placement === 'bottom' ? 'center top' : 'center bottom'
-                }}
-              >
-                <NavbarAlerts handleClose={this.handleClose} />
-              </Grow>
-            )}
-          </Poppers>
+          <NavbarAlerts />
         </div>
         <ClickAwayListener onClickAway={this.handleUserActionClose}>
           <Menu

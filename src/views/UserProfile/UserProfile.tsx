@@ -28,7 +28,10 @@ import { useFormik } from 'formik';
 import UserProfileUpdateRequest from '../../api/model/userProfileUpdateRequest';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import AddAlert from '@material-ui/icons/AddAlert';
-import { generateUserExtraAttribute } from '../../utils/userAttributeUtils';
+import {
+  generateUserExtraAttribute,
+  isUserRegistrationComplete
+} from '../../utils/userAttributeUtils';
 import keycloakConfig, {
   isSaleseazeManager,
   isSaleseazeSuperAdmin,
@@ -133,7 +136,6 @@ function UserProfile(props: any) {
 
   const userProfile = useAppSelector((state) => state.auth.userProfile);
   const userExtraDetails = generateUserExtraAttribute(userProfile);
-  console.log(data, error);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -426,7 +428,9 @@ function UserProfile(props: any) {
                       }}
                       formControlProps={{
                         fullWidth: true,
-                        disabled: !isSaleseazeManager()
+                        disabled:
+                          !isSaleseazeManager() ||
+                          isUserRegistrationComplete(userProfile)
                       }}
                     />
                   </GridItem>

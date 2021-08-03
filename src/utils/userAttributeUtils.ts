@@ -79,10 +79,13 @@ const isUserRegistrationComplete = (userProfile?: KeycloakProfile): boolean => {
       break;
     }
   }
-  return userAttributes &&
+  const isComplete =
+    userAttributes &&
     userAttributes.isRegistrationComplete &&
     userAttributes.isRegistrationComplete.length > 0
-    ? userAttributes.isRegistrationComplete[0] === 'true'
-    : false;
+      ? userAttributes.isRegistrationComplete[0] === 'true'
+      : false;
+  console.log(isComplete);
+  return isComplete;
 };
 export { generateUserExtraAttribute, isUserRegistrationComplete };

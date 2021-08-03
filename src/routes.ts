@@ -1,6 +1,7 @@
 // @material-ui/icons
 import Dashboard from '@material-ui/icons/Dashboard';
 import Person from '@material-ui/icons/Person';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import BubbleChart from '@material-ui/icons/BubbleChart';
 import LocationOn from '@material-ui/icons/LocationOn';
@@ -23,16 +24,16 @@ const dashboardRoutes = [
     layout: '/admin'
   },
   {
-    path: '/user',
+    path: '/my_profile',
     name: 'User Profile',
     icon: Person,
     component: UserProfile,
     layout: '/admin'
   },
   {
-    path: '/table',
-    name: 'Table List',
-    icon: 'content_paste',
+    path: '/social_accounts',
+    name: 'Social Accounts',
+    icon: AccountTreeIcon,
     component: TableList,
     layout: '/admin'
   },

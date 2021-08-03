@@ -10,7 +10,6 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import { createStyles } from '@material-ui/core';
 import { useGetMyProfileQuery } from '../../api/saleseazeApi';
-import Success from '../../components/Typography/Success';
 import Info from '../../components/Typography/Info';
 
 const styles = createStyles({
@@ -45,7 +44,7 @@ const styles = createStyles({
 
 function SocialAccounts(props: any) {
   const { classes } = props;
-  const { data, isLoading } = useGetMyProfileQuery();
+  const { data, isLoading, error } = useGetMyProfileQuery();
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -57,20 +56,14 @@ function SocialAccounts(props: any) {
             <p className={classes.cardCategoryWhite}>
               Here is a list of all connected social accounts for
               {!isLoading && data && <Info>{data.company?.companyName}</Info>}
+              {error && <Info>N/A</Info>}
             </p>
           </CardHeader>
           <CardBody>
             <Table
               tableHeaderColor="primary"
-              tableHead={['Name', 'Country', 'City', 'Salary']}
-              tableData={[
-                ['Dakota Rice', 'Niger', 'Oud-Turnhout', '$36,738'],
-                ['Minerva Hooper', 'Curaçao', 'Sinaai-Waas', '$23,789'],
-                ['Sage Rodriguez', 'Netherlands', 'Baileux', '$56,142'],
-                ['Philip Chaney', 'Korea, South', 'Overland Park', '$38,735'],
-                ['Doris Greene', 'Malawi', 'Feldkirchen in Kärnten', '$63,542'],
-                ['Mason Porter', 'Chile', 'Gloucester', '$78,615']
-              ]}
+              tableHead={['Account Name', 'Provider', 'Connected On', 'Action']}
+              tableData={[['Facebook', 'Facebook', '12/01/2021', 'Edit']]}
             />
           </CardBody>
         </Card>

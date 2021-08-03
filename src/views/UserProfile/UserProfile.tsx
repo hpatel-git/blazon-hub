@@ -108,7 +108,7 @@ const validationSchema = yup.object({
 function UserProfile(props: any) {
   const classes = useStyles();
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
-  const { data, error, refetch } = useGetMyProfileQuery();
+  const { data, refetch } = useGetMyProfileQuery();
 
   const [isUserProfileUpdated, setUserProfileUpdate] = useState(false);
   const [isError, setIsError] = useState(false);

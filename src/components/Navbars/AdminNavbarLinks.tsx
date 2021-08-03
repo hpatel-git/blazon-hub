@@ -76,7 +76,6 @@ class HeaderLinks extends React.Component<Props, {}> {
 
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
     return (
       <div>
         <div className={classes.searchWrapper}>

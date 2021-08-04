@@ -155,12 +155,17 @@ const DialogTitle = withStyles(connectToSocialAccountsStyle)(
 function SocialAccounts(props: any) {
   const { classes } = props;
   const myProfileQuery = useGetMyProfileQuery();
+
   const [isError, setIsError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  const [isSuccess, setIsSuccess] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState('');
+
   const [open, setOpen] = React.useState(false);
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
   const [registerSocialAccount] = useRegisterSocialAccountMutation();
   const [deListSocialAccount] = useDeListSocialAccountMutation();
-  const [isUserProfileUpdated, setUserProfileUpdate] = React.useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -174,11 +179,24 @@ function SocialAccounts(props: any) {
     try {
       await deListSocialAccount(id).unwrap();
       socialAccountQuery.refetch();
-    } catch {
-      setIsError(true);
+      showSuccessMessage('Account delisted successfully');
+    } catch (e) {
+      handleError(e, 'Error while removing account');
     }
   };
 
+  const showSuccessMessage = (message: string) => {
+    setIsSuccess(true);
+    setSuccessMessage(message);
+  };
+  const handleError = (e: any, defaultMessage: string) => {
+    if ('data' in e) {
+      setErrorMessage(e.data.message);
+    } else {
+      setErrorMessage(defaultMessage);
+    }
+    setIsError(true);
+  };
   const callback = async (
     response: ReactFacebookLoginInfo | ReactFacebookFailureResponse
   ) => {
@@ -207,8 +225,11 @@ function SocialAccounts(props: any) {
         await registerSocialAccount(socialAccount).unwrap();
         socialAccountQuery.refetch();
         handleClose();
-      } catch {
-        setIsError(true);
+        showSuccessMessage(
+          `Account '${response.name}' registered successfully`
+        );
+      } catch (e) {
+        handleError(e, 'Error while connecting to social account');
       }
     }
   };
@@ -219,18 +240,24 @@ function SocialAccounts(props: any) {
           place="bc"
           color="success"
           icon={AddAlert}
-          message="User Profile Updated succesfully"
-          open={isUserProfileUpdated}
-          closeNotification={() => setUserProfileUpdate(false)}
+          message={successMessage}
+          open={isSuccess}
+          closeNotification={() => {
+            setIsSuccess(false);
+            setSuccessMessage('');
+          }}
           close={true}
         />
         <Snackbar
           place="bc"
           color="danger"
           icon={AddAlert}
-          message="User Profile Updated failed"
+          message={errorMessage}
           open={isError}
-          closeNotification={() => setIsError(false)}
+          closeNotification={() => {
+            setIsError(false);
+            setErrorMessage('');
+          }}
           close={true}
         />
         <Card>

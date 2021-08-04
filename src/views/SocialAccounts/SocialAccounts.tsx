@@ -259,6 +259,9 @@ function SocialAccounts(props: any) {
         <Dialog
           open={confirmation}
           onClose={handleClose}
+          fullWidth={true}
+          TransitionComponent={Transition}
+          keepMounted
           aria-labelledby="confirmation-dialog"
           aria-describedby="confirmation-dialog-description"
         >

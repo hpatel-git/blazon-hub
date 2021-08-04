@@ -42,6 +42,8 @@ function Snackbar({ ...props }: any) {
             : 'right'
       }}
       open={open}
+      autoHideDuration={4000}
+      onClose={() => props.closeNotification()}
       message={
         <div>
           {icon !== undefined ? <props.icon className={classes.icon} /> : null}

@@ -225,7 +225,7 @@ function SocialAccounts(props: any) {
         let existingAccount = socialAccountQuery.data?.filter(
           (it) => it.accountId === response.id
         );
-        if (existingAccount) {
+        if (existingAccount && existingAccount?.length > 0) {
           handleClose();
           handleError([], `Account '${response.name}' already present`);
           return;

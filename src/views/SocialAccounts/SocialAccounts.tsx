@@ -16,6 +16,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import { Config } from '../../config/Config';
 import ReactFacebookLogin, {
   ReactFacebookFailureResponse,
   ReactFacebookLoginInfo
@@ -122,8 +123,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
-// const isLoginInfo = (response: ReactFacebookLoginInfo | ReactFacebookFailureResponse): response is ReactFacebookLoginInfo =>
-
 const DialogTitle = withStyles(connectToSocialAccountsStyle)(
   (props: DialogTitleProps) => {
     const { children, classes, onClose, ...other } = props;
@@ -158,7 +157,9 @@ function SocialAccounts(props: any) {
   };
   const callback = (
     response: ReactFacebookLoginInfo | ReactFacebookFailureResponse
-  ) => {};
+  ) => {
+    console.log(response);
+  };
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -211,9 +212,12 @@ function SocialAccounts(props: any) {
             <ListItem>
               <div id="facebookWrapper" className={classes.facebookIconStyle}>
                 <ReactFacebookLogin
-                  appId="1088597931155576"
+                  appId={Config.root.SALESEAZE_FB_APP_ID}
                   callback={callback}
-                  textButton="Sign in with Facebook"
+                  autoLoad={false}
+                  // reAuthenticate={true}
+                  authType="reauthorize"
+                  textButton="Connect to Facebook"
                   icon={<FacebookIcon />}
                 />
               </div>

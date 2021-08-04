@@ -252,16 +252,25 @@ function SocialAccounts(props: any) {
 
           <CardBody>
             {socialAccountQuery.isFetching && <CircularProgress />}
-            {!socialAccountQuery.isFetching && (
+            {!socialAccountQuery.isFetching && socialAccountQuery.data && (
               <Table
                 tableHeaderColor="primary"
+                hasAction={true}
+                supportedActions={['REMOVE']}
                 tableHead={[
                   'Account Name',
                   'Provider',
                   'Connected On',
-                  'Action'
+                  'Modified By',
+                  'Actions'
                 ]}
-                tableData={[['Facebook', 'Facebook', '12/01/2021', 'Edit']]}
+                tableData={socialAccountQuery.data?.map((item) => [
+                  item.id,
+                  item.name,
+                  item.graphDomain,
+                  item.createdDate,
+                  item.modifiedBy
+                ])}
               />
             )}
           </CardBody>

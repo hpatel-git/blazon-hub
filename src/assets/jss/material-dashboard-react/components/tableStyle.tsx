@@ -56,6 +56,26 @@ const tableStyle = (theme: Theme) =>
       width: '100%',
       marginTop: theme.spacing.length * 3,
       overflowX: 'auto'
+    },
+    tableActions: {
+      display: 'flex',
+      border: 'none',
+      padding: '12px 8px !important',
+      verticalAlign: 'middle'
+    },
+    tableActionButtonIcon: {
+      width: '17px',
+      height: '17px'
+    },
+    edit: {
+      backgroundColor: 'transparent',
+      color: primaryColor[0],
+      boxShadow: 'none'
+    },
+    close: {
+      backgroundColor: 'transparent',
+      color: dangerColor[0],
+      boxShadow: 'none'
     }
   });
 

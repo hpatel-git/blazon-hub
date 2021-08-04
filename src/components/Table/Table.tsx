@@ -9,6 +9,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 // core components
 import tableStyle from '../../assets/jss/material-dashboard-react/components/tableStyle';
+import { IconButton, Tooltip } from '@material-ui/core';
+import { Close, Edit } from '@material-ui/icons';
 
 function CustomTable({ ...props }: any) {
   const { classes, tableHead, tableData, tableHeaderColor } = props;
@@ -35,13 +37,60 @@ function CustomTable({ ...props }: any) {
           {tableData.map((prop: any, key: any) => {
             return (
               <TableRow key={key}>
-                {prop.map((p: any, k: any) => {
-                  return (
-                    <TableCell className={classes.tableCell} key={k}>
-                      {p}
-                    </TableCell>
-                  );
-                })}
+                {prop
+                  .filter((p: any, k: any) => k !== 0)
+                  .map((p: any, k: any) => {
+                    return (
+                      <TableCell className={classes.tableCell} key={k}>
+                        {p}
+                      </TableCell>
+                    );
+                  })}
+                {props.hasAction && (
+                  <TableCell className={classes.tableCell}>
+                    {props.supportedActions.includes('EDIT') && (
+                      <Tooltip
+                        id="tooltip-top"
+                        title=""
+                        placement="top"
+                        classes={{ tooltip: classes.tooltip }}
+                      >
+                        <IconButton
+                          aria-label="Edit"
+                          className={classes.tableActionButton}
+                        >
+                          <Edit
+                            className={
+                              classes.tableActionButtonIcon + ' ' + classes.edit
+                            }
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+
+                    {props.supportedActions.includes('REMOVE') && (
+                      <Tooltip
+                        id="tooltip-top-start"
+                        title={`Remove Item : ${prop[0]}`}
+                        placement="top"
+                        classes={{ tooltip: classes.tooltip }}
+                      >
+                        <IconButton
+                          aria-label="Close"
+                          className={classes.tableActionButton}
+                        >
+                          <Close
+                            className={
+                              classes.tableActionButtonIcon +
+                              ' ' +
+                              classes.close
+                            }
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}

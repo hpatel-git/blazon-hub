@@ -3,6 +3,10 @@ import keycloakConfig from '../config/keycloakConfig';
 import Config from '../config';
 import UserProfileUpdateRequest from './model/userProfileUpdateRequest';
 import UserProfileResponse from './model/userProfileResponse';
+import RegisterSocialAccount from './model/registerSocialAccount';
+import SocialAccount from './model/socialAccount';
+
+type SocialAccountsResponse = SocialAccount[];
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',
@@ -28,9 +32,26 @@ export const saleseazeApi = createApi({
         method: 'PUT',
         body
       })
+    }),
+    fetchRegisteredSocialAccounts: builder.query<SocialAccountsResponse, void>({
+      query: () => `accounts`
+    }),
+    registerSocialAccount: builder.mutation<
+      void,
+      Partial<RegisterSocialAccount>
+    >({
+      query: ({ ...body }) => ({
+        url: `accounts`,
+        method: 'POST',
+        body
+      })
     })
   })
 });
 
-export const { useGetMyProfileQuery, useUpdateMyProfileMutation } =
-  saleseazeApi;
+export const {
+  useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
+  useFetchRegisteredSocialAccountsQuery,
+  useRegisterSocialAccountMutation
+} = saleseazeApi;

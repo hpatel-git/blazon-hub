@@ -1,5 +1,5 @@
 interface RegisterSocialAccount {
-  name: string;
+  name?: string;
   id: string;
   accessToken: string;
   userID: string;

@@ -25,8 +25,10 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import CloseIcon from '@material-ui/icons/Close';
+import AddAlert from '@material-ui/icons/AddAlert';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,8 +37,14 @@ import {
   Tooltip,
   Typography
 } from '@material-ui/core';
-import { useGetMyProfileQuery } from '../../api/saleseazeApi';
+import {
+  useFetchRegisteredSocialAccountsQuery,
+  useGetMyProfileQuery,
+  useRegisterSocialAccountMutation
+} from '../../api/saleseazeApi';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
+import Snackbar from '../../components/Snackbar/Snackbar';
+import RegisterSocialAccount from '../../api/model/registerSocialAccount';
 
 const connectToSocialAccountsStyle = (theme: Theme) =>
   createStyles({
@@ -145,8 +153,12 @@ const DialogTitle = withStyles(connectToSocialAccountsStyle)(
 
 function SocialAccounts(props: any) {
   const { classes } = props;
-  const { data, isLoading, error } = useGetMyProfileQuery();
+  const myProfileQuery = useGetMyProfileQuery();
+  const [isError, setIsError] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
+  const [registerSocialAccount] = useRegisterSocialAccountMutation();
+  const [isUserProfileUpdated, setUserProfileUpdate] = React.useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -155,14 +167,63 @@ function SocialAccounts(props: any) {
   const connectToSocialAccounts = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(true);
   };
-  const callback = (
+
+  const callback = async (
     response: ReactFacebookLoginInfo | ReactFacebookFailureResponse
   ) => {
     console.log(response);
+
+    if ('id' in response) {
+      try {
+        let socialAccount: RegisterSocialAccount = {
+          id: response.id,
+          accessToken: response.accessToken,
+          name: response.name,
+          graphDomain: '',
+          userID: '',
+          signedRequest: ''
+        };
+
+        for (const [key, value] of Object.entries(response)) {
+          if (key === 'graphDomain') {
+            socialAccount.graphDomain = value;
+          }
+          if (key === 'userID') {
+            socialAccount.userID = value;
+          }
+          if (key === 'signedRequest') {
+            socialAccount.signedRequest = value;
+          }
+        }
+        await registerSocialAccount(socialAccount).unwrap();
+        socialAccountQuery.refetch();
+        handleClose();
+      } catch {
+        setIsError(true);
+      }
+    }
   };
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
+        <Snackbar
+          place="bc"
+          color="success"
+          icon={AddAlert}
+          message="User Profile Updated succesfully"
+          open={isUserProfileUpdated}
+          closeNotification={() => setUserProfileUpdate(false)}
+          close={true}
+        />
+        <Snackbar
+          place="bc"
+          color="danger"
+          icon={AddAlert}
+          message="User Profile Updated failed"
+          open={isError}
+          closeNotification={() => setIsError(false)}
+          close={true}
+        />
         <Card>
           <CardHeader color="primary">
             <div className={classes.cardTitle}>
@@ -171,8 +232,10 @@ function SocialAccounts(props: any) {
               </h4>
               <div className={classes.cardCategoryWhite}>
                 Here is a list of all connected social accounts for
-                {!isLoading && data && <div>{data.company?.companyName}</div>}
-                {error && <div>N/A</div>}
+                {!myProfileQuery.isLoading && myProfileQuery.data && (
+                  <div>{myProfileQuery.data.company?.companyName}</div>
+                )}
+                {myProfileQuery.error && <div>N/A</div>}
               </div>
             </div>
             <div className={classes.cardAction}>
@@ -186,12 +249,21 @@ function SocialAccounts(props: any) {
               </Tooltip>
             </div>
           </CardHeader>
+
           <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={['Account Name', 'Provider', 'Connected On', 'Action']}
-              tableData={[['Facebook', 'Facebook', '12/01/2021', 'Edit']]}
-            />
+            {socialAccountQuery.isFetching && <CircularProgress />}
+            {!socialAccountQuery.isFetching && (
+              <Table
+                tableHeaderColor="primary"
+                tableHead={[
+                  'Account Name',
+                  'Provider',
+                  'Connected On',
+                  'Action'
+                ]}
+                tableData={[['Facebook', 'Facebook', '12/01/2021', 'Edit']]}
+              />
+            )}
           </CardBody>
         </Card>
       </GridItem>

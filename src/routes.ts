@@ -36,35 +36,35 @@ const dashboardRoutes = [
     icon: AccountTreeIcon,
     component: SocialAccounts,
     layout: '/admin'
-  },
-  {
-    path: '/typography',
-    name: 'Typography',
-    icon: LibraryBooks,
-    component: Typography,
-    layout: '/admin'
-  },
-  {
-    path: '/icons',
-    name: 'Icons',
-    icon: BubbleChart,
-    component: Icons,
-    layout: '/admin'
-  },
-  {
-    path: '/maps',
-    name: 'Maps',
-    icon: LocationOn,
-    component: Maps,
-    layout: '/admin'
-  },
-  {
-    path: '/notifications',
-    name: 'Notifications',
-    icon: Notifications,
-    component: NotificationsPage,
-    layout: '/admin'
   }
+  // {
+  //   path: '/typography',
+  //   name: 'Typography',
+  //   icon: LibraryBooks,
+  //   component: Typography,
+  //   layout: '/admin'
+  // },
+  // {
+  //   path: '/icons',
+  //   name: 'Icons',
+  //   icon: BubbleChart,
+  //   component: Icons,
+  //   layout: '/admin'
+  // },
+  // {
+  //   path: '/maps',
+  //   name: 'Maps',
+  //   icon: LocationOn,
+  //   component: Maps,
+  //   layout: '/admin'
+  // },
+  // {
+  //   path: '/notifications',
+  //   name: 'Notifications',
+  //   icon: Notifications,
+  //   component: NotificationsPage,
+  //   layout: '/admin'
+  // }
 ];
 
 export default dashboardRoutes;

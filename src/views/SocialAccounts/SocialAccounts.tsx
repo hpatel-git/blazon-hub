@@ -222,6 +222,14 @@ function SocialAccounts(props: any) {
   ) => {
     if ('id' in response) {
       try {
+        let existingAccount = socialAccountQuery.data?.filter(
+          (it) => it.accountId === response.id
+        );
+        if (existingAccount) {
+          handleClose();
+          handleError([], `Account '${response.name}' already present`);
+          return;
+        }
         let socialAccount: RegisterSocialAccount = {
           id: response.id,
           accessToken: response.accessToken,
@@ -249,6 +257,7 @@ function SocialAccounts(props: any) {
           `Account '${response.name}' registered successfully`
         );
       } catch (e) {
+        handleClose();
         handleError(e, 'Error while connecting to social account');
       }
     }

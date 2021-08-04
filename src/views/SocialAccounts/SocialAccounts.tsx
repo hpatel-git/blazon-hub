@@ -8,6 +8,9 @@ import {
 } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
+
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -32,6 +35,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   IconButton,
   Slide,
   Tooltip,
@@ -162,6 +166,9 @@ function SocialAccounts(props: any) {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState('');
 
+  const [confirmation, setConfirmation] = React.useState(false);
+  const [accountId, setAccountId] = React.useState('');
+
   const [open, setOpen] = React.useState(false);
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
   const [registerSocialAccount] = useRegisterSocialAccountMutation();
@@ -171,14 +178,27 @@ function SocialAccounts(props: any) {
     setOpen(false);
   };
 
+  const showConfirmation = (id: string) => {
+    setAccountId(id);
+    setConfirmation(true);
+  };
+  const handleCloseConfirmation = () => {
+    setConfirmation(false);
+  };
+
   const connectToSocialAccounts = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(true);
   };
 
-  const handleRemoveAction = async (id: string) => {
+  const handleRemoveAction = async () => {
     try {
-      await deListSocialAccount(id).unwrap();
+      if (!accountId) {
+        return;
+      }
+      await deListSocialAccount(accountId).unwrap();
       socialAccountQuery.refetch();
+      setConfirmation(false);
+      setAccountId('');
       showSuccessMessage('Account delisted successfully');
     } catch (e) {
       handleError(e, 'Error while removing account');
@@ -236,6 +256,47 @@ function SocialAccounts(props: any) {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
+        <Dialog
+          open={confirmation}
+          onClose={handleClose}
+          aria-labelledby="confirmation-dialog"
+          aria-describedby="confirmation-dialog-description"
+        >
+          <DialogTitle
+            id="alert-dialog-title"
+            onClose={handleCloseConfirmation}
+          >
+            {'Are you sure you want to delist account?'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              After delisting account, you will not able to see account on the
+              listing page. You may need to connect again in order to perform
+              any operation
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseConfirmation}
+              color="primary"
+              variant="contained"
+              size="small"
+              startIcon={<CancelIcon />}
+            >
+              Disagree
+            </Button>
+            <Button
+              onClick={handleRemoveAction}
+              color="primary"
+              variant="contained"
+              size="small"
+              startIcon={<DeleteIcon />}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Snackbar
           place="bc"
           color="success"
@@ -292,7 +353,7 @@ function SocialAccounts(props: any) {
               <Table
                 tableHeaderColor="primary"
                 hasAction={true}
-                onRemoveAction={handleRemoveAction}
+                onRemoveAction={showConfirmation}
                 supportedActions={['REMOVE']}
                 tableHead={[
                   'Account Name',
@@ -343,7 +404,13 @@ function SocialAccounts(props: any) {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button
+            onClick={handleClose}
+            color="primary"
+            variant="contained"
+            size="small"
+            startIcon={<CancelIcon />}
+          >
             Cancel
           </Button>
         </DialogActions>

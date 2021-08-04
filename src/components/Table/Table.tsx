@@ -51,13 +51,14 @@ function CustomTable({ ...props }: any) {
                     {props.supportedActions.includes('EDIT') && (
                       <Tooltip
                         id="tooltip-top"
-                        title=""
+                        title="Edit"
                         placement="top"
                         classes={{ tooltip: classes.tooltip }}
                       >
                         <IconButton
                           aria-label="Edit"
                           className={classes.tableActionButton}
+                          onClick={() => props.onEditAction(prop[0])}
                         >
                           <Edit
                             className={
@@ -78,6 +79,7 @@ function CustomTable({ ...props }: any) {
                         <IconButton
                           aria-label="Close"
                           className={classes.tableActionButton}
+                          onClick={() => props.onRemoveAction(prop[0])}
                         >
                           <Close
                             className={

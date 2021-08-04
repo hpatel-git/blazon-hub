@@ -40,7 +40,8 @@ import {
 import {
   useFetchRegisteredSocialAccountsQuery,
   useGetMyProfileQuery,
-  useRegisterSocialAccountMutation
+  useRegisterSocialAccountMutation,
+  useDeListSocialAccountMutation
 } from '../../api/saleseazeApi';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 import Snackbar from '../../components/Snackbar/Snackbar';
@@ -158,6 +159,7 @@ function SocialAccounts(props: any) {
   const [open, setOpen] = React.useState(false);
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
   const [registerSocialAccount] = useRegisterSocialAccountMutation();
+  const [deListSocialAccount] = useDeListSocialAccountMutation();
   const [isUserProfileUpdated, setUserProfileUpdate] = React.useState(false);
 
   const handleClose = () => {
@@ -168,11 +170,18 @@ function SocialAccounts(props: any) {
     setOpen(true);
   };
 
+  const handleRemoveAction = async (id: string) => {
+    try {
+      await deListSocialAccount(id).unwrap();
+      socialAccountQuery.refetch();
+    } catch {
+      setIsError(true);
+    }
+  };
+
   const callback = async (
     response: ReactFacebookLoginInfo | ReactFacebookFailureResponse
   ) => {
-    console.log(response);
-
     if ('id' in response) {
       try {
         let socialAccount: RegisterSocialAccount = {
@@ -256,6 +265,7 @@ function SocialAccounts(props: any) {
               <Table
                 tableHeaderColor="primary"
                 hasAction={true}
+                onRemoveAction={handleRemoveAction}
                 supportedActions={['REMOVE']}
                 tableHead={[
                   'Account Name',

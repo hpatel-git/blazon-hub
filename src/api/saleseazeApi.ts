@@ -45,6 +45,12 @@ export const saleseazeApi = createApi({
         method: 'POST',
         body
       })
+    }),
+    deListSocialAccount: builder.mutation<void, string>({
+      query: (id: string) => ({
+        url: `accounts/${id}`,
+        method: 'DELETE'
+      })
     })
   })
 });
@@ -53,5 +59,6 @@ export const {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
   useFetchRegisteredSocialAccountsQuery,
-  useRegisterSocialAccountMutation
+  useRegisterSocialAccountMutation,
+  useDeListSocialAccountMutation
 } = saleseazeApi;

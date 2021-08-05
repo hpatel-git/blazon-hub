@@ -43,7 +43,7 @@ import {
   Typography
 } from '@material-ui/core';
 import {
-  useFetchRegisteredSocialAccountsQuery,
+  useFetchAccountPagesQuery,
   useGetMyProfileQuery,
   useRegisterSocialAccountMutation,
   useDeListSocialAccountMutation
@@ -165,7 +165,7 @@ function SocialPages(props: any) {
   const { classes } = props;
   const myProfileQuery = useGetMyProfileQuery();
   const params = useParams<SocialPageParam>();
-  console.log(params.accountId);
+
   const [isError, setIsError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -175,7 +175,7 @@ function SocialPages(props: any) {
   const [confirmation, setConfirmation] = React.useState(false);
 
   const [open, setOpen] = React.useState(false);
-  const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
+  const fetchAccountPagesQuery = useFetchAccountPagesQuery(params.accountId);
   const [registerSocialAccount, { isLoading }] =
     useRegisterSocialAccountMutation();
   const [deListSocialAccount] = useDeListSocialAccountMutation();
@@ -220,7 +220,7 @@ function SocialPages(props: any) {
   ) => {
     if ('id' in response) {
       try {
-        let existingAccount = socialAccountQuery.data?.filter(
+        let existingAccount = fetchAccountPagesQuery.data?.filter(
           (it) => it.accountId === response.id
         );
         if (existingAccount && existingAccount?.length > 0) {
@@ -249,7 +249,7 @@ function SocialPages(props: any) {
           }
         }
         await registerSocialAccount(socialAccount).unwrap();
-        socialAccountQuery.refetch();
+        fetchAccountPagesQuery.refetch();
         handleClose();
         showSuccessMessage(
           `Account '${response.name}' registered successfully`
@@ -339,28 +339,29 @@ function SocialPages(props: any) {
           </CardHeader>
 
           <CardBody>
-            {socialAccountQuery.isFetching && <CircularProgress />}
-            {!socialAccountQuery.isFetching && socialAccountQuery.data && (
-              <Table
-                tableHeaderColor="primary"
-                hasAction={false}
-                hasLink={false}
-                tableHead={[
-                  'Id',
-                  'Name',
-                  'Category',
-                  'Modified By',
-                  'Modified Date'
-                ]}
-                tableData={socialAccountQuery.data?.map((item) => [
-                  item.name,
-                  item.graphDomain,
-                  item.createdDate,
-                  item.modifiedBy,
-                  item.modifiedDate
-                ])}
-              />
-            )}
+            {fetchAccountPagesQuery.isFetching && <CircularProgress />}
+            {!fetchAccountPagesQuery.isFetching &&
+              fetchAccountPagesQuery.data && (
+                <Table
+                  tableHeaderColor="primary"
+                  hasAction={false}
+                  hasLink={false}
+                  tableHead={[
+                    'Id',
+                    'Name',
+                    'Category',
+                    'Modified By',
+                    'Modified Date'
+                  ]}
+                  tableData={fetchAccountPagesQuery.data?.map((item) => [
+                    item.id,
+                    item.name,
+                    item.category,
+                    item.modifiedBy,
+                    item.modifiedDate
+                  ])}
+                />
+              )}
           </CardBody>
         </Card>
       </GridItem>

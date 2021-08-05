@@ -5,8 +5,10 @@ import UserProfileUpdateRequest from './model/userProfileUpdateRequest';
 import UserProfileResponse from './model/userProfileResponse';
 import RegisterSocialAccount from './model/registerSocialAccount';
 import SocialAccount from './model/socialAccount';
+import FacebookPage from './model/facebookPage';
 
 type SocialAccountsResponse = SocialAccount[];
+type FacebookPageResponse = FacebookPage[];
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',
@@ -51,6 +53,9 @@ export const saleseazeApi = createApi({
         url: `accounts/${id}`,
         method: 'DELETE'
       })
+    }),
+    fetchAccountPages: builder.query<FacebookPageResponse, string>({
+      query: (accountId: string) => `accounts/${accountId}/pages`
     })
   })
 });
@@ -60,5 +65,6 @@ export const {
   useUpdateMyProfileMutation,
   useFetchRegisteredSocialAccountsQuery,
   useRegisterSocialAccountMutation,
-  useDeListSocialAccountMutation
+  useDeListSocialAccountMutation,
+  useFetchAccountPagesQuery
 } = saleseazeApi;

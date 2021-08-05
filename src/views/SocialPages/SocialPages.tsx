@@ -7,6 +7,8 @@ import Link from '@material-ui/core/Link';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import PagesIcon from '@material-ui/icons/Pages';
 import { useHistory } from 'react-router-dom';
+import SyncIcon from '@material-ui/icons/Sync';
+import purple from '@material-ui/core/colors/purple';
 
 // core components
 import GridItem from '../../components/Grid/GridItem';
@@ -16,8 +18,11 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import AddAlert from '@material-ui/icons/AddAlert';
-import { CircularProgress } from '@material-ui/core';
-import { useFetchAccountPagesQuery } from '../../api/saleseazeApi';
+import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
+import {
+  useFetchAccountPagesQuery,
+  useInitiateSyncPagesMutation
+} from '../../api/saleseazeApi';
 import Snackbar from '../../components/Snackbar/Snackbar';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cardAction: {
       float: 'right',
       color: '#FFFFFF',
-      marginTop: '0px'
+      marginTop: '-10px'
     },
     cardTitle: {
       float: 'left',
@@ -109,7 +114,33 @@ function SocialPages(props: any) {
   const [successMessage, setSuccessMessage] = React.useState('');
 
   const fetchAccountPagesQuery = useFetchAccountPagesQuery(params.accountId);
+  const [initiateSyncPages] = useInitiateSyncPagesMutation();
+  const showSuccessMessage = (message: string) => {
+    setIsSuccess(true);
+    setSuccessMessage(message);
+  };
+  const handleError = (e: any, defaultMessage: string) => {
+    if ('data' in e) {
+      setErrorMessage(e.data.message);
+    } else {
+      setErrorMessage(defaultMessage);
+    }
+    setIsError(true);
+  };
 
+  const syncPages = async () => {
+    try {
+      if (!params.accountId) {
+        return;
+      }
+      await initiateSyncPages(params.accountId).unwrap();
+      fetchAccountPagesQuery.refetch();
+
+      showSuccessMessage('Pages sync successfully');
+    } catch (e) {
+      handleError(e, 'Error while sync pages');
+    }
+  };
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -156,6 +187,13 @@ function SocialPages(props: any) {
           <CardHeader color="primary">
             <div className={classes.cardTitle}>
               <h4 className={classes.cardTitleWhite}>Social Pages</h4>
+            </div>
+            <div className={classes.cardAction}>
+              <Tooltip title="Sync Pages">
+                <IconButton aria-label="Sync Pages" onClick={syncPages}>
+                  <SyncIcon style={{ color: purple[50] }} />
+                </IconButton>
+              </Tooltip>
             </div>
           </CardHeader>
 

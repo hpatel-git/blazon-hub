@@ -54,6 +54,12 @@ export const saleseazeApi = createApi({
         method: 'DELETE'
       })
     }),
+    initiateSyncPages: builder.mutation<void, string>({
+      query: (id: string) => ({
+        url: `accounts/${id}/sync_pages`,
+        method: 'PUT'
+      })
+    }),
     fetchAccountPages: builder.query<FacebookPageResponse, string>({
       query: (accountId: string) => `accounts/${accountId}/pages`
     })
@@ -66,5 +72,6 @@ export const {
   useFetchRegisteredSocialAccountsQuery,
   useRegisterSocialAccountMutation,
   useDeListSocialAccountMutation,
+  useInitiateSyncPagesMutation,
   useFetchAccountPagesQuery
 } = saleseazeApi;

@@ -190,7 +190,7 @@ function SocialPages(props: any) {
             </div>
             <div className={classes.cardAction}>
               <Tooltip title="Sync Pages">
-                <IconButton aria-label="Sync Pages" onClick={syncPages}>
+                <IconButton aria-label="Sync pages" onClick={syncPages}>
                   <SyncIcon style={{ color: purple[50] }} />
                 </IconButton>
               </Tooltip>

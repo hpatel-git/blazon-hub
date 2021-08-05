@@ -7,10 +7,6 @@ import {
   WithStyles
 } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
-import purple from '@material-ui/core/colors/purple';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CancelIcon from '@material-ui/icons/Cancel';
 
 // core components
 import GridItem from '../../components/Grid/GridItem';
@@ -19,38 +15,10 @@ import Table from '../../components/Table/Table';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import { Config } from '../../config/Config';
-import ReactFacebookLogin, {
-  ReactFacebookFailureResponse,
-  ReactFacebookLoginInfo
-} from 'react-facebook-login';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import CloseIcon from '@material-ui/icons/Close';
 import AddAlert from '@material-ui/icons/AddAlert';
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  IconButton,
-  Slide,
-  Tooltip,
-  Typography
-} from '@material-ui/core';
-import {
-  useFetchAccountPagesQuery,
-  useGetMyProfileQuery,
-  useRegisterSocialAccountMutation,
-  useDeListSocialAccountMutation
-} from '../../api/saleseazeApi';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
+import { CircularProgress } from '@material-ui/core';
+import { useFetchAccountPagesQuery } from '../../api/saleseazeApi';
 import Snackbar from '../../components/Snackbar/Snackbar';
-import RegisterSocialAccount from '../../api/model/registerSocialAccount';
 
 const connectToSocialAccountsStyle = (theme: Theme) =>
   createStyles({
@@ -130,40 +98,12 @@ const styles = createStyles({
     }
   }
 });
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement<any, any> },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="down" ref={ref} {...props} />;
-});
-
-const DialogTitle = withStyles(connectToSocialAccountsStyle)(
-  (props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
-    return (
-      <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <Typography variant="h6">{children}</Typography>
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </MuiDialogTitle>
-    );
-  }
-);
-
 type SocialPageParam = {
   accountId: string;
 };
 
 function SocialPages(props: any) {
   const { classes } = props;
-  const myProfileQuery = useGetMyProfileQuery();
   const params = useParams<SocialPageParam>();
 
   const [isError, setIsError] = React.useState(false);
@@ -172,141 +112,11 @@ function SocialPages(props: any) {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState('');
 
-  const [confirmation, setConfirmation] = React.useState(false);
-
-  const [open, setOpen] = React.useState(false);
   const fetchAccountPagesQuery = useFetchAccountPagesQuery(params.accountId);
-  const [registerSocialAccount, { isLoading }] =
-    useRegisterSocialAccountMutation();
-  const [deListSocialAccount] = useDeListSocialAccountMutation();
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const showConfirmation = (id: string) => {
-    setConfirmation(true);
-  };
-  const handleCloseConfirmation = () => {
-    setConfirmation(false);
-  };
-
-  const connectToSocialAccounts = (event: React.MouseEvent<HTMLElement>) => {
-    setOpen(true);
-  };
-
-  const handleRemoveAction = async () => {
-    try {
-      showSuccessMessage('Account delisted successfully');
-    } catch (e) {
-      handleError(e, 'Error while removing account');
-    }
-  };
-
-  const showSuccessMessage = (message: string) => {
-    setIsSuccess(true);
-    setSuccessMessage(message);
-  };
-  const handleError = (e: any, defaultMessage: string) => {
-    if ('data' in e) {
-      setErrorMessage(e.data.message);
-    } else {
-      setErrorMessage(defaultMessage);
-    }
-    setIsError(true);
-  };
-  const callback = async (
-    response: ReactFacebookLoginInfo | ReactFacebookFailureResponse
-  ) => {
-    if ('id' in response) {
-      try {
-        let existingAccount = fetchAccountPagesQuery.data?.filter(
-          (it) => it.accountId === response.id
-        );
-        if (existingAccount && existingAccount?.length > 0) {
-          handleClose();
-          handleError([], `Account '${response.name}' already present`);
-          return;
-        }
-        let socialAccount: RegisterSocialAccount = {
-          id: response.id,
-          accessToken: response.accessToken,
-          name: response.name,
-          graphDomain: '',
-          userID: '',
-          signedRequest: ''
-        };
-
-        for (const [key, value] of Object.entries(response)) {
-          if (key === 'graphDomain') {
-            socialAccount.graphDomain = value;
-          }
-          if (key === 'userID') {
-            socialAccount.userID = value;
-          }
-          if (key === 'signedRequest') {
-            socialAccount.signedRequest = value;
-          }
-        }
-        await registerSocialAccount(socialAccount).unwrap();
-        fetchAccountPagesQuery.refetch();
-        handleClose();
-        showSuccessMessage(
-          `Account '${response.name}' registered successfully`
-        );
-      } catch (e) {
-        handleClose();
-        handleError(e, 'Error while connecting to social account');
-      }
-    }
-  };
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        <Dialog
-          open={confirmation}
-          onClose={handleClose}
-          fullWidth={true}
-          TransitionComponent={Transition}
-          keepMounted
-          aria-labelledby="confirmation-dialog"
-          aria-describedby="confirmation-dialog-description"
-        >
-          <DialogTitle
-            id="alert-dialog-title"
-            onClose={handleCloseConfirmation}
-          >
-            {'Are you sure you want to delist account?'}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              After delisting account, you will not able to see account on the
-              listing page. You may need to connect again in order to perform
-              any operation
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleCloseConfirmation}
-              color="primary"
-              variant="contained"
-              size="small"
-              startIcon={<CancelIcon />}
-            >
-              Disagree
-            </Button>
-            <Button
-              onClick={handleRemoveAction}
-              color="primary"
-              variant="contained"
-              size="small"
-              startIcon={<DeleteIcon />}
-              autoFocus
-            >
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
         <Snackbar
           place="bc"
           color="success"
@@ -365,47 +175,6 @@ function SocialPages(props: any) {
           </CardBody>
         </Card>
       </GridItem>
-      <Dialog
-        open={open}
-        fullWidth={true}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="connect-social-account-title" onClose={handleClose}>
-          {'Connect to Social Account'}
-        </DialogTitle>
-        <DialogContent dividers>
-          <List className={classes.root} aria-label="contacts">
-            <ListItem>
-              {isLoading && <CircularProgress />}
-              <div id="facebookWrapper" className={classes.facebookIconStyle}>
-                <ReactFacebookLogin
-                  appId={Config.root.SALESEAZE_FB_APP_ID}
-                  callback={callback}
-                  autoLoad={false}
-                  authType="reauthorize"
-                  textButton="Connect to Facebook"
-                  icon={<FacebookIcon />}
-                />
-              </div>
-            </ListItem>
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            variant="contained"
-            size="small"
-            startIcon={<CancelIcon />}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
     </GridContainer>
   );
 }

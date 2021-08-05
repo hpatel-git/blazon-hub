@@ -90,7 +90,7 @@ function NavbarAlerts({ ...props }: any) {
                   {!isRegistrationCompleted && (
                     <MenuItem
                       component={Link}
-                      to="/admin/user"
+                      to="/admin/my_profile"
                       onClick={handleClose}
                       className={classes.dropdownItem}
                     >

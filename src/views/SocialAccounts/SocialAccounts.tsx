@@ -171,7 +171,8 @@ function SocialAccounts(props: any) {
 
   const [open, setOpen] = React.useState(false);
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
-  const [registerSocialAccount] = useRegisterSocialAccountMutation();
+  const [registerSocialAccount, { isLoading }] =
+    useRegisterSocialAccountMutation();
   const [deListSocialAccount] = useDeListSocialAccountMutation();
 
   const handleClose = () => {
@@ -401,12 +402,12 @@ function SocialAccounts(props: any) {
         <DialogContent dividers>
           <List className={classes.root} aria-label="contacts">
             <ListItem>
+              {isLoading && <CircularProgress />}
               <div id="facebookWrapper" className={classes.facebookIconStyle}>
                 <ReactFacebookLogin
                   appId={Config.root.SALESEAZE_FB_APP_ID}
                   callback={callback}
                   autoLoad={false}
-                  // reAuthenticate={true}
                   authType="reauthorize"
                   textButton="Connect to Facebook"
                   icon={<FacebookIcon />}

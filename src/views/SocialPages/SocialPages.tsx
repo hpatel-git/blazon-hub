@@ -1,12 +1,12 @@
 import React from 'react';
 // @material-ui/core components
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles
-} from '@material-ui/core/styles';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import PagesIcon from '@material-ui/icons/Pages';
+import { useHistory } from 'react-router-dom';
 
 // core components
 import GridItem from '../../components/Grid/GridItem';
@@ -20,91 +20,87 @@ import { CircularProgress } from '@material-ui/core';
 import { useFetchAccountPagesQuery } from '../../api/saleseazeApi';
 import Snackbar from '../../components/Snackbar/Snackbar';
 
-const connectToSocialAccountsStyle = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2)
+    facebookIconStyle: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& .kep-login-facebook.metro': {
+        width: '100%',
+        borderRadius: 2,
+        fontSize: '14px',
+        fontWeight: 500,
+        textTransform: 'none',
+        display: 'inline-flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        paddingRight: 10,
+        '& svg': {
+          margin: '10px 10px 10px 10px'
+        }
+      }
     },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
-    }
-  });
-
-export interface DialogTitleProps
-  extends WithStyles<typeof connectToSocialAccountsStyle> {
-  id: string;
-  children: React.ReactNode;
-  onClose: () => void;
-}
-
-const styles = createStyles({
-  facebookIconStyle: {
-    display: 'flex',
-    flexDirection: 'column',
-    '& .kep-login-facebook.metro': {
-      width: '100%',
-      borderRadius: 2,
-      fontSize: '14px',
-      fontWeight: 500,
-      textTransform: 'none',
-      display: 'inline-flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: 10,
-      paddingRight: 10,
-      '& svg': {
-        margin: '10px 10px 10px 10px'
+    cardCategoryWhite: {
+      '&,& a,& a:hover,& a:focus': {
+        color: 'rgba(255,255,255,.62)',
+        margin: '0',
+        fontSize: '14px',
+        marginTop: '0',
+        marginBottom: '0'
+      },
+      '& a,& a:hover,& a:focus': {
+        color: '#FFFFFF'
+      }
+    },
+    icon: {
+      marginRight: theme.spacing(0.5),
+      width: 20,
+      height: 20
+    },
+    cardAction: {
+      float: 'right',
+      color: '#FFFFFF',
+      marginTop: '0px'
+    },
+    cardTitle: {
+      float: 'left',
+      color: '#FFFFFF'
+    },
+    link: {
+      display: 'flex'
+    },
+    cardTitleWhite: {
+      color: '#FFFFFF',
+      marginTop: '0px',
+      minHeight: 'auto',
+      fontWeight: 300,
+      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+      marginBottom: '3px',
+      textDecoration: 'none',
+      '& small': {
+        color: '#777',
+        fontSize: '65%',
+        fontWeight: 400,
+        lineHeight: 1
       }
     }
-  },
-  cardCategoryWhite: {
-    '&,& a,& a:hover,& a:focus': {
-      color: 'rgba(255,255,255,.62)',
-      margin: '0',
-      fontSize: '14px',
-      marginTop: '0',
-      marginBottom: '0'
-    },
-    '& a,& a:hover,& a:focus': {
-      color: '#FFFFFF'
-    }
-  },
-  cardAction: {
-    float: 'right',
-    color: '#FFFFFF',
-    marginTop: '0px'
-  },
-  cardTitle: {
-    float: 'left',
-    color: '#FFFFFF'
-  },
-  cardTitleWhite: {
-    color: '#FFFFFF',
-    marginTop: '0px',
-    minHeight: 'auto',
-    fontWeight: 300,
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: '3px',
-    textDecoration: 'none',
-    '& small': {
-      color: '#777',
-      fontSize: '65%',
-      fontWeight: 400,
-      lineHeight: 1
-    }
-  }
-});
+  })
+);
 type SocialPageParam = {
   accountId: string;
 };
 
 function SocialPages(props: any) {
-  const { classes } = props;
+  const classes = useStyles();
+  const history = useHistory();
   const params = useParams<SocialPageParam>();
+  const handleRoute = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    history.push('/admin/accounts');
+    event.preventDefault();
+  };
 
   const [isError, setIsError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -117,6 +113,21 @@ function SocialPages(props: any) {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            color="inherit"
+            href="/"
+            onClick={handleRoute}
+            className={classes.link}
+          >
+            <AccountTreeIcon className={classes.icon} />
+            Social Accounts
+          </Link>
+          <Link color="inherit" href="#" className={classes.link}>
+            <PagesIcon className={classes.icon} />
+            {params.accountId}
+          </Link>
+        </Breadcrumbs>
         <Snackbar
           place="bc"
           color="success"
@@ -179,4 +190,4 @@ function SocialPages(props: any) {
   );
 }
 
-export default withStyles(styles)(SocialPages);
+export default SocialPages;

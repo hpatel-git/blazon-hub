@@ -94,14 +94,14 @@ function CustomTable({ ...props }: any) {
                     {props.supportedActions.includes('REMOVE') && (
                       <Tooltip
                         id="tooltip-top-start"
-                        title={`Remove Item : ${prop[0]}`}
+                        title={`Remove Item : ${prop[0][0]}`}
                         placement="top"
                         classes={{ tooltip: classes.tooltip }}
                       >
                         <IconButton
                           aria-label="Close"
                           className={classes.tableActionButton}
-                          onClick={() => onRemoveAction(prop[0])}
+                          onClick={() => onRemoveAction(prop[0][0])}
                         >
                           <Close
                             className={

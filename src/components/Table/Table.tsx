@@ -7,13 +7,31 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import { NavLink } from 'react-router-dom';
 // core components
 import tableStyle from '../../assets/jss/material-dashboard-react/components/tableStyle';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { Close, Edit } from '@material-ui/icons';
 
 function CustomTable({ ...props }: any) {
-  const { classes, tableHead, tableData, tableHeaderColor } = props;
+  const {
+    classes,
+    tableHead,
+    tableData,
+    tableHeaderColor,
+    hasLink,
+    hasAction,
+    supportedActions,
+    onEditAction,
+    onRemoveAction
+  } = props;
+  const filterData = (data: any) => {
+    if (hasAction || hasLink) {
+      return data.filter((p: any, k: any) => k !== 0);
+    } else {
+      return data;
+    }
+  };
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -37,18 +55,22 @@ function CustomTable({ ...props }: any) {
           {tableData.map((prop: any, key: any) => {
             return (
               <TableRow key={key}>
-                {prop
-                  .filter((p: any, k: any) => k !== 0)
-                  .map((p: any, k: any) => {
-                    return (
-                      <TableCell className={classes.tableCell} key={k}>
-                        {p}
-                      </TableCell>
-                    );
-                  })}
-                {props.hasAction && (
+                {filterData(prop).map((p: any, k: any) => {
+                  return (
+                    <TableCell className={classes.tableCell} key={k}>
+                      {k === 0 && hasLink ? (
+                        <NavLink to={prop[0][1]} key={key}>
+                          {p}
+                        </NavLink>
+                      ) : (
+                        p
+                      )}
+                    </TableCell>
+                  );
+                })}
+                {hasAction && (
                   <TableCell className={classes.tableCell}>
-                    {props.supportedActions.includes('EDIT') && (
+                    {supportedActions.includes('EDIT') && (
                       <Tooltip
                         id="tooltip-top"
                         title="Edit"
@@ -58,7 +80,7 @@ function CustomTable({ ...props }: any) {
                         <IconButton
                           aria-label="Edit"
                           className={classes.tableActionButton}
-                          onClick={() => props.onEditAction(prop[0])}
+                          onClick={() => onEditAction(prop[0][0])}
                         >
                           <Edit
                             className={
@@ -79,7 +101,7 @@ function CustomTable({ ...props }: any) {
                         <IconButton
                           aria-label="Close"
                           className={classes.tableActionButton}
-                          onClick={() => props.onRemoveAction(prop[0])}
+                          onClick={() => onRemoveAction(prop[0])}
                         >
                           <Close
                             className={

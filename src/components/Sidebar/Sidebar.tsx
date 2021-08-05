@@ -28,53 +28,48 @@ const Sidebar = ({ ...props }) => {
   };
   var links = (
     <List className={classes.list}>
-      {routes.map((prop: any, key: any) => {
-        var activePro = ' ';
-        var listItemClasses;
-        if (prop.path === '/upgrade-to-pro') {
-          activePro = classes.activePro + ' ';
-          listItemClasses = classNames({
-            [' ' + classes[color]]: true
-          });
-        } else {
-          listItemClasses = classNames({
+      {routes
+        .filter((prop: any) => !prop.hidden)
+        .map((prop: any, key: any) => {
+          var activePro = ' ';
+          var listItemClasses = classNames({
             [' ' + classes[color]]: activeRoute(prop.layout + prop.path)
           });
-        }
-        const whiteFontClasses = classNames({
-          [' ' + classes.whiteFont]: activeRoute(prop.layout + prop.path)
-        });
-        return (
-          <NavLink
-            to={prop.layout + prop.path}
-            className={activePro + classes.item}
-            activeClassName="active"
-            key={key}
-          >
-            <ListItem
-              button={true}
-              className={classes.itemLink + listItemClasses}
+
+          const whiteFontClasses = classNames({
+            [' ' + classes.whiteFont]: activeRoute(prop.layout + prop.path)
+          });
+          return (
+            <NavLink
+              to={prop.layout + prop.path}
+              className={activePro + classes.item}
+              activeClassName="active"
+              key={key}
             >
-              {typeof prop.icon === 'string' ? (
-                <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
-                >
-                  {prop.icon}
-                </Icon>
-              ) : (
-                <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
+              <ListItem
+                button={true}
+                className={classes.itemLink + listItemClasses}
+              >
+                {typeof prop.icon === 'string' ? (
+                  <Icon
+                    className={classNames(classes.itemIcon, whiteFontClasses)}
+                  >
+                    {prop.icon}
+                  </Icon>
+                ) : (
+                  <prop.icon
+                    className={classNames(classes.itemIcon, whiteFontClasses)}
+                  />
+                )}
+                <ListItemText
+                  primary={prop.name}
+                  className={classNames(classes.itemText, whiteFontClasses)}
+                  disableTypography={true}
                 />
-              )}
-              <ListItemText
-                primary={prop.name}
-                className={classNames(classes.itemText, whiteFontClasses)}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
-        );
-      })}
+              </ListItem>
+            </NavLink>
+          );
+        })}
     </List>
   );
   var brand = (

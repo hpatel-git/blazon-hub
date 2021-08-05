@@ -2,24 +2,19 @@
 import Dashboard from '@material-ui/icons/Dashboard';
 import Person from '@material-ui/icons/Person';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import BubbleChart from '@material-ui/icons/BubbleChart';
-import LocationOn from '@material-ui/icons/LocationOn';
-import Notifications from '@material-ui/icons/Notifications';
+import PagesIcon from '@material-ui/icons/Pages';
 // core components/views for Admin layout
 import DashboardPage from './views/Dashboard/Dashboard';
 import UserProfile from './views/UserProfile/UserProfile';
 import SocialAccounts from './views/SocialAccounts/SocialAccounts';
-import Typography from './views/Typography/Typography';
-import Icons from './views/Icons/Icons';
-import Maps from './views/Maps/Maps';
-import NotificationsPage from './views/Notifications/Notifications';
+import SocialPages from './views/SocialPages/SocialPages';
 
 const dashboardRoutes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
     icon: Dashboard,
+    hidden: false,
     component: DashboardPage,
     layout: '/admin'
   },
@@ -27,14 +22,24 @@ const dashboardRoutes = [
     path: '/my_profile',
     name: 'User Profile',
     icon: Person,
+    hidden: false,
     component: UserProfile,
     layout: '/admin'
   },
   {
-    path: '/social_accounts',
+    path: '/accounts',
     name: 'Social Accounts',
     icon: AccountTreeIcon,
+    hidden: false,
     component: SocialAccounts,
+    layout: '/admin'
+  },
+  {
+    path: '/accounts/:accountId/pages',
+    name: 'Social Pages',
+    icon: PagesIcon,
+    hidden: true,
+    component: SocialPages,
     layout: '/admin'
   }
   // {

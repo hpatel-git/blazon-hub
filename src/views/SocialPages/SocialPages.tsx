@@ -6,6 +6,7 @@ import {
   withStyles,
   WithStyles
 } from '@material-ui/core/styles';
+import { useParams } from 'react-router-dom';
 import purple from '@material-ui/core/colors/purple';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -156,10 +157,15 @@ const DialogTitle = withStyles(connectToSocialAccountsStyle)(
   }
 );
 
-function SocialAccounts(props: any) {
+type SocialPageParam = {
+  accountId: string;
+};
+
+function SocialPages(props: any) {
   const { classes } = props;
   const myProfileQuery = useGetMyProfileQuery();
-
+  const params = useParams<SocialPageParam>();
+  console.log(params.accountId);
   const [isError, setIsError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -167,7 +173,6 @@ function SocialAccounts(props: any) {
   const [successMessage, setSuccessMessage] = React.useState('');
 
   const [confirmation, setConfirmation] = React.useState(false);
-  const [accountId, setAccountId] = React.useState('');
 
   const [open, setOpen] = React.useState(false);
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
@@ -180,7 +185,6 @@ function SocialAccounts(props: any) {
   };
 
   const showConfirmation = (id: string) => {
-    setAccountId(id);
     setConfirmation(true);
   };
   const handleCloseConfirmation = () => {
@@ -193,13 +197,6 @@ function SocialAccounts(props: any) {
 
   const handleRemoveAction = async () => {
     try {
-      if (!accountId) {
-        return;
-      }
-      await deListSocialAccount(accountId).unwrap();
-      socialAccountQuery.refetch();
-      setConfirmation(false);
-      setAccountId('');
       showSuccessMessage('Account delisted successfully');
     } catch (e) {
       handleError(e, 'Error while removing account');
@@ -337,26 +334,7 @@ function SocialAccounts(props: any) {
         <Card>
           <CardHeader color="primary">
             <div className={classes.cardTitle}>
-              <h4 className={classes.cardTitleWhite}>
-                Connected Social Accounts
-              </h4>
-              <div className={classes.cardCategoryWhite}>
-                Here is a list of all connected social accounts for
-                {!myProfileQuery.isLoading && myProfileQuery.data && (
-                  <div>{myProfileQuery.data.company?.companyName}</div>
-                )}
-                {myProfileQuery.error && <div>N/A</div>}
-              </div>
-            </div>
-            <div className={classes.cardAction}>
-              <Tooltip title="Connect to Social Account">
-                <IconButton
-                  aria-label="connect to social accounts"
-                  onClick={connectToSocialAccounts}
-                >
-                  <AddIcon style={{ color: purple[50] }} />
-                </IconButton>
-              </Tooltip>
+              <h4 className={classes.cardTitleWhite}>Social Pages</h4>
             </div>
           </CardHeader>
 
@@ -365,23 +343,21 @@ function SocialAccounts(props: any) {
             {!socialAccountQuery.isFetching && socialAccountQuery.data && (
               <Table
                 tableHeaderColor="primary"
-                hasAction={true}
-                hasLink={true}
-                onRemoveAction={showConfirmation}
-                supportedActions={['REMOVE']}
+                hasAction={false}
+                hasLink={false}
                 tableHead={[
-                  'Account Name',
-                  'Provider',
-                  'Connected On',
+                  'Id',
+                  'Name',
+                  'Category',
                   'Modified By',
-                  'Actions'
+                  'Modified Date'
                 ]}
                 tableData={socialAccountQuery.data?.map((item) => [
-                  [item.id, `accounts/${item.accountId}/pages`],
                   item.name,
                   item.graphDomain,
                   item.createdDate,
-                  item.modifiedBy
+                  item.modifiedBy,
+                  item.modifiedDate
                 ])}
               />
             )}
@@ -433,4 +409,4 @@ function SocialAccounts(props: any) {
   );
 }
 
-export default withStyles(styles)(SocialAccounts);
+export default withStyles(styles)(SocialPages);

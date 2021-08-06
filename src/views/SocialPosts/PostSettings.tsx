@@ -15,8 +15,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import TextField from '@material-ui/core/TextField';
+
 import Linkify from 'react-linkify';
+import { formatDistance } from 'date-fns';
+import CustomInput from '../../components/CustomInput/CustomInput';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,9 +55,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-
-export default function PostSettings() {
+interface PostSettingsProps {
+  formik: any;
+}
+export default function PostSettings(props: PostSettingsProps) {
   const classes = useStyles();
+  const { formik } = props;
+  console.log(formik);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -80,17 +86,29 @@ export default function PostSettings() {
               }}
               // className={classes.postTitle}
               title="Create Post"
-              subheader="September 14, 2016"
+              subheader={formatDistance(new Date(), new Date(), {
+                addSuffix: true
+              })}
             />
 
             <CardContent>
-              <TextField
-                id="outlined-multiline-static"
-                multiline
-                fullWidth
-                placeholder="Write Something to Saleseaze"
-                rows={10}
-                variant="outlined"
+              <CustomInput
+                labelText=""
+                id="content"
+                errorMessage={formik.errors.content}
+                error={formik.touched.content && Boolean(formik.errors.content)}
+                formControlProps={{
+                  fullWidth: true
+                }}
+                inputProps={{
+                  multiline: true,
+                  rows: 10,
+                  value: `${formik.values.content}`,
+                  onChange: formik.handleChange,
+                  helpertext: `${
+                    formik.touched.content && formik.errors.content
+                  }`
+                }}
               />
             </CardContent>
             <CardActions disableSpacing>
@@ -131,10 +149,14 @@ export default function PostSettings() {
             />
 
             <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
-                <Linkify>
-                  Examples are available at tasti.github.io/react-linkify/.
-                </Linkify>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ whiteSpace: 'pre-line' }}
+                paragraph={true}
+                component="p"
+              >
+                <Linkify>{formik.values.content}</Linkify>
               </Typography>
             </CardContent>
             <CardMedia

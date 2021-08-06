@@ -8,7 +8,8 @@ import {
   WithStyles,
   withStyles
 } from '@material-ui/core/styles';
-import CancelIcon from '@material-ui/icons/Cancel';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -129,26 +130,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const DialogTitle = withStyles(connectToSocialAccountsStyle)(
-  (props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
-    return (
-      <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <Typography variant="h6">{children}</Typography>
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </MuiDialogTitle>
-    );
-  }
-);
-
 function getSteps() {
   return ['Select Post settings', 'Add pages', 'Schedule Post'];
 }
@@ -157,8 +138,24 @@ interface SchedulePostProps {
   isOpen: boolean;
   closeSchedulePost: () => void;
 }
+const validationSchema = yup.object({
+  content: yup
+    .string()
+    .min(3, 'Content should be of minimum 3 characters length')
+    .required('Content is required')
+});
 function SchedulePost(props: SchedulePostProps) {
   const classes = useStyles();
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      content: 'Welcome to Formik'
+    },
+    validationSchema: validationSchema,
+    validate: (values) => {},
+    onSubmit: (values) => {}
+  });
 
   const [isError, setIsError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -199,95 +196,97 @@ function SchedulePost(props: SchedulePostProps) {
   };
 
   return (
-    <GridContainer>
-      <Dialog
-        open={props.isOpen}
-        fullWidth={true}
-        maxWidth={'lg'}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={props.closeSchedulePost}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <Snackbar
-          place="bc"
-          color="success"
-          icon={AddAlert}
-          message={successMessage}
-          open={isSuccess}
-          closeNotification={() => {
-            setIsSuccess(false);
-            setSuccessMessage('');
-          }}
-          close={true}
-        />
-        <Snackbar
-          place="bc"
-          color="danger"
-          icon={AddAlert}
-          message={errorMessage}
-          open={isError}
-          closeNotification={() => {
-            setIsError(false);
-            setErrorMessage('');
-          }}
-          close={true}
-        />
-        <Stepper
-          alternativeLabel
-          activeStep={activeStep}
-          connector={<ColorlibConnector />}
+    <form onSubmit={formik.handleSubmit}>
+      <GridContainer>
+        <Dialog
+          open={props.isOpen}
+          fullWidth={true}
+          maxWidth={'lg'}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={props.closeSchedulePost}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
         >
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel StepIconComponent={SchedulePostStepIcon}>
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <DialogContent dividers>
-          {activeStep === 0 && (
-            <List aria-label="contacts">
-              <ListItem>{isLoading && <CircularProgress />}</ListItem>
-              <ListItem>
-                <PostSettings />
-              </ListItem>
-            </List>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <div>
-            {activeStep === steps.length ? (
-              <div>
-                <Button onClick={handleReset} className={classes.button}>
-                  Reset
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className={classes.button}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
+          <Snackbar
+            place="bc"
+            color="success"
+            icon={AddAlert}
+            message={successMessage}
+            open={isSuccess}
+            closeNotification={() => {
+              setIsSuccess(false);
+              setSuccessMessage('');
+            }}
+            close={true}
+          />
+          <Snackbar
+            place="bc"
+            color="danger"
+            icon={AddAlert}
+            message={errorMessage}
+            open={isError}
+            closeNotification={() => {
+              setIsError(false);
+              setErrorMessage('');
+            }}
+            close={true}
+          />
+          <Stepper
+            alternativeLabel
+            activeStep={activeStep}
+            connector={<ColorlibConnector />}
+          >
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel StepIconComponent={SchedulePostStepIcon}>
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <DialogContent dividers>
+            {activeStep === 0 && (
+              <List aria-label="contacts">
+                <ListItem>{isLoading && <CircularProgress />}</ListItem>
+                <ListItem>
+                  <PostSettings formik={formik} />
+                </ListItem>
+              </List>
             )}
-          </div>
-        </DialogActions>
-      </Dialog>
-    </GridContainer>
+          </DialogContent>
+          <DialogActions>
+            <div>
+              {activeStep === steps.length ? (
+                <div>
+                  <Button onClick={handleReset} className={classes.button}>
+                    Reset
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    className={classes.button}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNext}
+                    className={classes.button}
+                  >
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogActions>
+        </Dialog>
+      </GridContainer>
+    </form>
   );
 }
 

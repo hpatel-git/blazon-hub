@@ -62,6 +62,9 @@ export const saleseazeApi = createApi({
     }),
     fetchAccountPages: builder.query<FacebookPageResponse, string>({
       query: (accountId: string) => `accounts/${accountId}/pages`
+    }),
+    scrapeUrl: builder.query<Map<string, string>, string>({
+      query: (url: string) => `tools/scrap_urls?url=${url}`
     })
   })
 });
@@ -73,5 +76,6 @@ export const {
   useRegisterSocialAccountMutation,
   useDeListSocialAccountMutation,
   useInitiateSyncPagesMutation,
-  useFetchAccountPagesQuery
+  useFetchAccountPagesQuery,
+  useScrapeUrlQuery
 } = saleseazeApi;

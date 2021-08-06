@@ -3,11 +3,13 @@ import Dashboard from '@material-ui/icons/Dashboard';
 import Person from '@material-ui/icons/Person';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import PagesIcon from '@material-ui/icons/Pages';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 // core components/views for Admin layout
 import DashboardPage from './views/Dashboard/Dashboard';
 import UserProfile from './views/UserProfile/UserProfile';
 import SocialAccounts from './views/SocialAccounts/SocialAccounts';
 import SocialPages from './views/SocialPages/SocialPages';
+import SocialPosts from './views/SocialPosts/SocialPosts';
 
 const dashboardRoutes = [
   {
@@ -41,7 +43,16 @@ const dashboardRoutes = [
     hidden: true,
     component: SocialPages,
     layout: '/admin'
+  },
+  {
+    path: '/posts',
+    name: 'Social Posts',
+    icon: PostAddIcon,
+    hidden: false,
+    component: SocialPosts,
+    layout: '/admin'
   }
+
   // {
   //   path: '/typography',
   //   name: 'Typography',

@@ -59,7 +59,11 @@ function CustomTable({ ...props }: any) {
                   return (
                     <TableCell className={classes.tableCell} key={k}>
                       {k === 0 && hasLink ? (
-                        <NavLink to={prop[0][1]} key={key}>
+                        <NavLink
+                          className={classes.grayTableHeader}
+                          to={prop[0][1]}
+                          key={key}
+                        >
                           {p}
                         </NavLink>
                       ) : (

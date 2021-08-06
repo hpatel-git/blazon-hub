@@ -6,6 +6,7 @@ import UserProfileResponse from './model/userProfileResponse';
 import RegisterSocialAccount from './model/registerSocialAccount';
 import SocialAccount from './model/socialAccount';
 import FacebookPage from './model/facebookPage';
+import ScrapeUrlResponse from './model/scrapeUrlResponse';
 
 type SocialAccountsResponse = SocialAccount[];
 type FacebookPageResponse = FacebookPage[];
@@ -63,8 +64,8 @@ export const saleseazeApi = createApi({
     fetchAccountPages: builder.query<FacebookPageResponse, string>({
       query: (accountId: string) => `accounts/${accountId}/pages`
     }),
-    scrapeUrl: builder.query<Map<string, string>, string>({
-      query: (url: string) => `tools/scrap_urls?url=${url}`
+    scrapeUrl: builder.query<ScrapeUrlResponse, string>({
+      query: (q: string) => `tools/scrap_urls?url=${q}`
     })
   })
 });

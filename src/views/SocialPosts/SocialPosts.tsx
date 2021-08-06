@@ -13,16 +13,12 @@ import purple from '@material-ui/core/colors/purple';
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
-import Table from '../../components/Table/Table';
+
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import AddAlert from '@material-ui/icons/AddAlert';
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
-import {
-  useFetchAccountPagesQuery,
-  useInitiateSyncPagesMutation
-} from '../../api/saleseazeApi';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePost from './SchedulePost';
 
@@ -116,8 +112,6 @@ function SocialPosts(props: any) {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState('');
 
-  const fetchAccountPagesQuery = useFetchAccountPagesQuery(params.accountId);
-  const [initiateSyncPages] = useInitiateSyncPagesMutation();
   const showSuccessMessage = (message: string) => {
     setIsSuccess(true);
     setSuccessMessage(message);
@@ -134,19 +128,6 @@ function SocialPosts(props: any) {
     setIsError(true);
   };
 
-  const syncPages = async () => {
-    try {
-      if (!params.accountId) {
-        return;
-      }
-      await initiateSyncPages(params.accountId).unwrap();
-      fetchAccountPagesQuery.refetch();
-
-      showSuccessMessage('Pages sync successfully');
-    } catch (e) {
-      handleError(e, 'Error while sync pages');
-    }
-  };
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -214,32 +195,7 @@ function SocialPosts(props: any) {
               </Tooltip>
             </div>
           </CardHeader>
-
-          <CardBody>
-            {fetchAccountPagesQuery.isFetching && <CircularProgress />}
-            {!fetchAccountPagesQuery.isFetching &&
-              fetchAccountPagesQuery.data && (
-                <Table
-                  tableHeaderColor="primary"
-                  hasAction={false}
-                  hasLink={false}
-                  tableHead={[
-                    'Id',
-                    'Name',
-                    'Category',
-                    'Modified By',
-                    'Modified Date'
-                  ]}
-                  tableData={fetchAccountPagesQuery.data?.map((item) => [
-                    item.id,
-                    item.name,
-                    item.category,
-                    item.modifiedBy,
-                    item.modifiedDate
-                  ])}
-                />
-              )}
-          </CardBody>
+          <CardBody />
         </Card>
       </GridItem>
     </GridContainer>

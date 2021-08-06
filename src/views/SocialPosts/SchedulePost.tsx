@@ -5,8 +5,7 @@ import {
   createStyles,
   Theme,
   makeStyles,
-  WithStyles,
-  withStyles
+  WithStyles
 } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -15,10 +14,8 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 // core components
 import GridContainer from '../../components/Grid/GridContainer';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import CloseIcon from '@material-ui/icons/Close';
 import AddAlert from '@material-ui/icons/AddAlert';
 import {
   Button,
@@ -26,9 +23,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  IconButton,
-  Slide,
-  Typography
+  Slide
 } from '@material-ui/core';
 import { useRegisterSocialAccountMutation } from '../../api/saleseazeApi';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
@@ -142,7 +137,7 @@ const validationSchema = yup.object({
   content: yup
     .string()
     .min(3, 'Content should be of minimum 3 characters length')
-    .required('Content is required')
+    .required('Post content is required')
 });
 function SchedulePost(props: SchedulePostProps) {
   const classes = useStyles();
@@ -150,7 +145,11 @@ function SchedulePost(props: SchedulePostProps) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      content: 'Welcome to Formik'
+      content: '',
+      ogImage: 'https://material-ui.com/static/logo.png',
+      ogTitle: '',
+      ogDescription: '',
+      ogUrl: ''
     },
     validationSchema: validationSchema,
     validate: (values) => {},
@@ -275,6 +274,7 @@ function SchedulePost(props: SchedulePostProps) {
                   <Button
                     variant="contained"
                     color="primary"
+                    disabled={!formik.dirty}
                     onClick={handleNext}
                     className={classes.button}
                   >

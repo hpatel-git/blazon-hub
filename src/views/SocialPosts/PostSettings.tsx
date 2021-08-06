@@ -3,7 +3,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Grid from '@material-ui/core/Grid';
@@ -15,10 +14,14 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
-import Linkify from 'react-linkify';
 import { formatDistance } from 'date-fns';
 import CustomInput from '../../components/CustomInput/CustomInput';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import Linkify from 'linkifyjs/react';
+import * as linkify from 'linkifyjs';
+import PostImagePreview from './PostImagePreview';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
     media: {
       height: 0,
       paddingTop: '56.25%' // 16:9
+    },
+    actionIcon: {
+      marginLeft: 'auto'
     },
     expand: {
       transform: 'rotate(0deg)',
@@ -61,13 +67,21 @@ interface PostSettingsProps {
 export default function PostSettings(props: PostSettingsProps) {
   const classes = useStyles();
   const { formik } = props;
-  console.log(formik);
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
+  const handleKeyDown = async (e: any) => {
+    if (e.keyCode === 13) {
+      const links = linkify.find(e.target.value, 'url');
+      if (links && links.length > 0) {
+        const url = links[links.length - 1].value;
+        formik.setFieldValue('ogUrl', encodeURIComponent(url));
+      }
+    }
+  };
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
@@ -85,7 +99,7 @@ export default function PostSettings(props: PostSettingsProps) {
                 }
               }}
               // className={classes.postTitle}
-              title="Create Post"
+              title={`Create Post`}
               subheader={formatDistance(new Date(), new Date(), {
                 addSuffix: true
               })}
@@ -105,6 +119,8 @@ export default function PostSettings(props: PostSettingsProps) {
                   rows: 10,
                   value: `${formik.values.content}`,
                   onChange: formik.handleChange,
+                  onKeyDown: handleKeyDown,
+                  placeholder: 'Write Something to Post',
                   helpertext: `${
                     formik.touched.content && formik.errors.content
                   }`
@@ -112,21 +128,17 @@ export default function PostSettings(props: PostSettingsProps) {
               />
             </CardContent>
             <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-              <IconButton aria-label="share">
-                <ShareIcon />
-              </IconButton>
+              <Typography variant="caption" component="p">
+                Add to your post
+              </Typography>
               <IconButton
-                className={clsx(classes.expand, {
-                  [classes.expandOpen]: expanded
-                })}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="show more"
+                aria-label="Photo/Video"
+                className={classes.actionIcon}
               >
-                <ExpandMoreIcon />
+                <PhotoLibraryIcon />
+              </IconButton>
+              <IconButton aria-label="Get WhatsApp messages">
+                <WhatsAppIcon />
               </IconButton>
             </CardActions>
           </Card>
@@ -136,7 +148,7 @@ export default function PostSettings(props: PostSettingsProps) {
             <CardHeader
               avatar={
                 <Avatar aria-label="recipe" className={classes.avatar}>
-                  R
+                  S
                 </Avatar>
               }
               action={
@@ -159,11 +171,7 @@ export default function PostSettings(props: PostSettingsProps) {
                 <Linkify>{formik.values.content}</Linkify>
               </Typography>
             </CardContent>
-            <CardMedia
-              className={classes.media}
-              image="http://lda.lowes.com/is/image/Lowes/OG-HOMEPAGE?scl=1"
-              title="Paella dish"
-            />
+            <PostImagePreview ogImage={formik.values.ogUrl} />
             <CardActions disableSpacing>
               <IconButton aria-label="add to favorites">
                 <FavoriteIcon />

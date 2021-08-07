@@ -308,15 +308,27 @@ function SchedulePost(props: SchedulePostProps) {
                 >
                   Back
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={isNextButtonDisabled()}
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
+                {activeStep === steps.length - 1 ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={isNextButtonDisabled()}
+                    onClick={handleNext}
+                    className={classes.button}
+                  >
+                    Publish
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={isNextButtonDisabled()}
+                    onClick={handleNext}
+                    className={classes.button}
+                  >
+                    Next
+                  </Button>
+                )}
               </div>
             </div>
           </DialogActions>

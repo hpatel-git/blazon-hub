@@ -16,10 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
     textField: {
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
-      width: 200
+      width: 230
     },
     pageSelectionWrapper: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(2),
+      height: 270
     }
   })
 );
@@ -34,8 +35,9 @@ export default function PostTicker(props: PostSettingsProps) {
     // bgcolor: '#D5D9DC',
     borderColor: '#D5D9DC',
     pt: 2,
-    border: 1,
-    shadows: 12
+    border: 0,
+    shadows: 12,
+    height: 300
   };
   return (
     <div className={classes.root}>

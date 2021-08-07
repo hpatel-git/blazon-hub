@@ -38,7 +38,6 @@ export default function AddPages(props: PostSettingsProps) {
     formik.values.selectedPages
   );
   React.useEffect(() => {
-    console.log(result.isFetching);
     if (!result.isFetching) {
       const pages = result.data ? result.data : [];
       const notPresentInLeft = not(pages, left);

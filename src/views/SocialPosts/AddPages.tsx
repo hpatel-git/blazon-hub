@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 import { CircularProgress } from '@material-ui/core';
 import Table from '../../components/Table/Table';
 import PageSelectionList from './PageSelectionList';
+import FacebookPage from '../../api/model/facebookPage';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -31,10 +32,35 @@ export default function AddPages(props: PostSettingsProps) {
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
   const [trigger, result] = useLazyFetchAccountPagesQuery();
   const { formik } = props;
+
+  const [left, setLeft] = React.useState<FacebookPage[]>([]);
+  const [right, setRight] = React.useState<FacebookPage[]>(
+    formik.values.selectedPages
+  );
+  React.useEffect(() => {
+    console.log(result.isFetching);
+    if (!result.isFetching) {
+      const pages = result.data ? result.data : [];
+      const notPresentInLeft = not(pages, left);
+      const notPresentInRight = not(notPresentInLeft, right);
+      const updatedLeft = [...left, ...notPresentInRight];
+      setLeft(updatedLeft);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
+  const not = (a: FacebookPage[], b: FacebookPage[]) => {
+    return a.filter(
+      (value: FacebookPage) =>
+        b.findIndex((item: FacebookPage) => value.id === item.id) === -1
+    );
+  };
+  const handleSelectedPages = (data: FacebookPage[]) => {
+    setRight(data);
+    formik.setFieldValue('selectedPages', data);
+  };
   const handleRowClick = async (row: any) => {
     try {
       let accountId = row[0][0];
-      console.log(accountId);
       await trigger(accountId);
     } catch (e) {}
   };
@@ -70,6 +96,7 @@ export default function AddPages(props: PostSettingsProps) {
             ])}
           />
         )}
+
         <div className={classes.pageSelectionWrapper}>
           <Box
             display="flex"
@@ -78,7 +105,13 @@ export default function AddPages(props: PostSettingsProps) {
             {...defaultProps}
           >
             <Box>
-              <PageSelectionList formik={formik} data={result.data} />
+              <PageSelectionList
+                formik={formik}
+                left={left}
+                setLeft={setLeft}
+                right={right}
+                setRight={handleSelectedPages}
+              />
             </Box>
           </Box>
         </div>

@@ -10,7 +10,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import { FacebookPageResponse } from '../../api/model/facebookPage';
+import FacebookPage, {
+  FacebookPageResponse
+} from '../../api/model/facebookPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,33 +35,41 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function not(a: number[], b: number[]) {
-  return a.filter((value) => b.indexOf(value) === -1);
+function not(a: FacebookPage[], b: FacebookPage[]) {
+  return a.filter(
+    (value: FacebookPage) =>
+      b.findIndex((item: FacebookPage) => value.id === item.id) === -1
+  );
 }
 
-function intersection(a: number[], b: number[]) {
-  return a.filter((value) => b.indexOf(value) !== -1);
+function intersection(a: FacebookPage[], b: FacebookPage[]) {
+  return a.filter(
+    (value: FacebookPage) =>
+      b.findIndex((item: FacebookPage) => item.id === value.id) !== -1
+  );
 }
 
-function union(a: number[], b: number[]) {
+function union(a: FacebookPage[], b: FacebookPage[]) {
   return [...a, ...not(b, a)];
 }
 
 interface PageSelectionListProps {
   formik: any;
-  data?: FacebookPageResponse;
+  setLeft: (data: FacebookPage[]) => void;
+  left: FacebookPage[];
+  setRight: (data: FacebookPage[]) => void;
+  right: FacebookPage[];
 }
 export default function PageSelectionList(props: PageSelectionListProps) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState<number[]>([]);
-  const [left, setLeft] = React.useState<number[]>([0, 1, 2, 3]);
-  const [right, setRight] = React.useState<number[]>([4, 5, 6, 7]);
+  const { left, setLeft, right, setRight } = props;
 
+  const [checked, setChecked] = React.useState<FacebookPage[]>([]);
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
+  const handleToggle = (value: FacebookPage) => () => {
+    const currentIndex = checked.findIndex((item) => item.id === value.id);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
@@ -71,11 +81,11 @@ export default function PageSelectionList(props: PageSelectionListProps) {
     setChecked(newChecked);
   };
 
-  const numberOfChecked = (items: number[]) =>
+  const stringOfChecked = (items: FacebookPage[]) =>
     intersection(checked, items).length;
 
-  const handleToggleAll = (items: number[]) => () => {
-    if (numberOfChecked(items) === items.length) {
+  const handleToggleAll = (items: FacebookPage[]) => () => {
+    if (stringOfChecked(items) === items.length) {
       setChecked(not(checked, items));
     } else {
       setChecked(union(checked, items));
@@ -94,7 +104,7 @@ export default function PageSelectionList(props: PageSelectionListProps) {
     setChecked(not(checked, rightChecked));
   };
 
-  const customList = (title: React.ReactNode, items: number[]) => (
+  const customList = (title: React.ReactNode, items: FacebookPage[]) => (
     <Card>
       <CardHeader
         className={classes.cardHeader}
@@ -102,27 +112,26 @@ export default function PageSelectionList(props: PageSelectionListProps) {
           <Checkbox
             onClick={handleToggleAll(items)}
             checked={
-              numberOfChecked(items) === items.length && items.length !== 0
+              stringOfChecked(items) === items.length && items.length !== 0
             }
             indeterminate={
-              numberOfChecked(items) !== items.length &&
-              numberOfChecked(items) !== 0
+              stringOfChecked(items) !== items.length &&
+              stringOfChecked(items) !== 0
             }
             disabled={items.length === 0}
             inputProps={{ 'aria-label': 'all items selected' }}
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={`${stringOfChecked(items)}/${items.length} selected`}
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">
-        {items.map((value: number) => {
+        {items.map((value: FacebookPage) => {
           const labelId = `transfer-list-all-item-${value}-label`;
-
           return (
             <ListItem
-              key={value}
+              key={value.id}
               role="listitem"
               button
               onClick={handleToggle(value)}
@@ -135,10 +144,7 @@ export default function PageSelectionList(props: PageSelectionListProps) {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText
-                id={labelId}
-                primary={`Welcom to the page List item ${value + 1}`}
-              />
+              <ListItemText id={labelId} primary={`${value.name}`} />
             </ListItem>
           );
         })}
@@ -149,7 +155,7 @@ export default function PageSelectionList(props: PageSelectionListProps) {
 
   return (
     <Grid container spacing={2} alignItems="center" className={classes.root}>
-      <Grid item>{customList('Choices', left)}</Grid>
+      <Grid item>{customList('Available Pages', left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -174,7 +180,7 @@ export default function PageSelectionList(props: PageSelectionListProps) {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList('Chosen', right)}</Grid>
+      <Grid item>{customList('Selected Pages', right)}</Grid>
     </Grid>
   );
 }

@@ -149,7 +149,8 @@ function SchedulePost(props: SchedulePostProps) {
       ogImage: '',
       ogTitle: '',
       ogDescription: '',
-      ogUrl: ''
+      ogUrl: '',
+      selectedPages: []
     },
     validationSchema: validationSchema,
     validate: (values) => {},
@@ -183,6 +184,9 @@ function SchedulePost(props: SchedulePostProps) {
       return true;
     }
     if (activeStep === 0 && Boolean(formik.errors.content)) {
+      return true;
+    }
+    if (activeStep === 1 && formik.values.selectedPages.length === 0) {
       return true;
     }
     return false;

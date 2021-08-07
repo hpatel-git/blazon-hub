@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface PostSettingsProps {
   formik: any;
 }
-export default function PostSettings(props: PostSettingsProps) {
+export default function AddPages(props: PostSettingsProps) {
   const classes = useStyles();
   const { formik } = props;
 
@@ -130,7 +130,7 @@ export default function PostSettings(props: PostSettingsProps) {
                 }}
                 inputProps={{
                   multiline: true,
-                  rows: 8,
+                  rows: 10,
                   inputRef: inputRef,
                   className: classes.postInputBox,
                   value: `${formik.values.content}`,

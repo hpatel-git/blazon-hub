@@ -30,6 +30,7 @@ import { TransitionProps } from '@material-ui/core/transitions/transition';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePostStepIcon, { ColorlibConnector } from './SchedulePostUtils';
 import PostSettings from './PostSettings';
+import AddPages from './AddPages';
 
 const connectToSocialAccountsStyle = (theme: Theme) =>
   createStyles({
@@ -193,7 +194,20 @@ function SchedulePost(props: SchedulePostProps) {
     }
     setIsError(true);
   };
-
+  const isNextButtonDisabled = (): boolean => {
+    if (!formik.dirty) {
+      return true;
+    }
+    if (activeStep === 0 && Boolean(formik.errors.content)) {
+      return true;
+    }
+    return false;
+  };
+  const handleOnClose = (event: object, reason: string) => {
+    if (reason !== 'backdropClick') {
+      props.closeSchedulePost();
+    }
+  };
   return (
     <form onSubmit={formik.handleSubmit}>
       <GridContainer>
@@ -203,7 +217,7 @@ function SchedulePost(props: SchedulePostProps) {
           maxWidth={'lg'}
           TransitionComponent={Transition}
           keepMounted
-          onClose={props.closeSchedulePost}
+          onClose={handleOnClose}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -253,6 +267,13 @@ function SchedulePost(props: SchedulePostProps) {
                 </ListItem>
               </List>
             )}
+            {activeStep === 1 && (
+              <List aria-label="contacts">
+                <ListItem>
+                  <AddPages formik={formik} />
+                </ListItem>
+              </List>
+            )}
           </DialogContent>
           <DialogActions>
             <div>
@@ -274,7 +295,7 @@ function SchedulePost(props: SchedulePostProps) {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={!formik.dirty}
+                    disabled={isNextButtonDisabled()}
                     onClick={handleNext}
                     className={classes.button}
                   >

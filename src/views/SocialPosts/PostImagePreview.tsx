@@ -51,7 +51,7 @@ export default function PostImagePreview(props: PostImagePreviewProps) {
   const classes = useStyles();
   const { ogImage } = props;
   const scrapeUrlQuery = useScrapeUrlQuery(ogImage);
-  console.log(scrapeUrlQuery.data);
+
   return (
     <React.Fragment>
       {scrapeUrlQuery.isFetching && <CircularProgress />}

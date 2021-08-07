@@ -12,4 +12,5 @@ interface SocialAccount {
   modifiedDate: string;
   modifiedBy: string;
 }
+export type SocialAccountsResponse = SocialAccount[];
 export default SocialAccount;

@@ -5,12 +5,20 @@ import {
   useLazyFetchAccountPagesQuery
 } from '../../api/saleseazeApi';
 import CardBody from '../../components/Card/CardBody';
+import Box from '@material-ui/core/Box';
 import { CircularProgress } from '@material-ui/core';
 import Table from '../../components/Table/Table';
+import PageSelectionList from './PageSelectionList';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1
+    },
+    title: {
+      fontSize: 14
+    },
+    pageSelectionWrapper: {
+      marginTop: theme.spacing(2)
     }
   })
 );
@@ -21,7 +29,7 @@ export default function AddPages(props: PostSettingsProps) {
   const classes = useStyles();
 
   const socialAccountQuery = useFetchRegisteredSocialAccountsQuery();
-  const [trigger, result, lastPromiseInfo] = useLazyFetchAccountPagesQuery();
+  const [trigger, result] = useLazyFetchAccountPagesQuery();
   const { formik } = props;
   const handleRowClick = async (row: any) => {
     try {
@@ -30,7 +38,13 @@ export default function AddPages(props: PostSettingsProps) {
       await trigger(accountId);
     } catch (e) {}
   };
-
+  const defaultProps = {
+    // bgcolor: '#D5D9DC',
+    borderColor: '#D5D9DC',
+    pt: 2,
+    border: 1,
+    shadows: 12
+  };
   return (
     <div className={classes.root}>
       <CardBody>
@@ -56,6 +70,18 @@ export default function AddPages(props: PostSettingsProps) {
             ])}
           />
         )}
+        <div className={classes.pageSelectionWrapper}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            borderRadius="borderRadius"
+            {...defaultProps}
+          >
+            <Box>
+              <PageSelectionList formik={formik} data={result.data} />
+            </Box>
+          </Box>
+        </div>
       </CardBody>
       {(socialAccountQuery.isFetching || result.isFetching) && (
         <CircularProgress />

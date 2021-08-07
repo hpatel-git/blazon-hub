@@ -4,12 +4,9 @@ import Config from '../config';
 import UserProfileUpdateRequest from './model/userProfileUpdateRequest';
 import UserProfileResponse from './model/userProfileResponse';
 import RegisterSocialAccount from './model/registerSocialAccount';
-import SocialAccount from './model/socialAccount';
-import FacebookPage from './model/facebookPage';
+import { SocialAccountsResponse } from './model/socialAccount';
+import { FacebookPageResponse } from './model/facebookPage';
 import ScrapeUrlResponse from './model/scrapeUrlResponse';
-
-type SocialAccountsResponse = SocialAccount[];
-type FacebookPageResponse = FacebookPage[];
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',

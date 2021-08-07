@@ -15,5 +15,5 @@ interface FBPageCategory {
   id: string;
   name: string;
 }
-
+export type FacebookPageResponse = FacebookPage[];
 export default FacebookPage;

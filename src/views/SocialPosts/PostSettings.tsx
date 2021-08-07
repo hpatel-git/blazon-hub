@@ -79,9 +79,20 @@ export default function PostSettings(props: PostSettingsProps) {
       if (links && links.length > 0) {
         const url = links[links.length - 1].value;
         formik.setFieldValue('ogUrl', encodeURIComponent(url));
+      } else {
+        formik.setFieldValue('ogUrl', '');
       }
     }
   };
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useEffect(() => {
+    console.log('====', inputRef.current);
+    if (inputRef.current) {
+      inputRef.current?.focus();
+    }
+  }, []);
+
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
@@ -117,6 +128,7 @@ export default function PostSettings(props: PostSettingsProps) {
                 inputProps={{
                   multiline: true,
                   rows: 10,
+                  inputRef: inputRef,
                   value: `${formik.values.content}`,
                   onChange: formik.handleChange,
                   onKeyDown: handleKeyDown,
@@ -156,8 +168,10 @@ export default function PostSettings(props: PostSettingsProps) {
                   <MoreVertIcon />
                 </IconButton>
               }
-              title="Shrimp and Chorizo Paella"
-              subheader="September 14, 2016"
+              title="Saleseaze Post Preview"
+              subheader={formatDistance(new Date(), new Date(), {
+                addSuffix: true
+              })}
             />
 
             <CardContent>

@@ -5,5 +5,6 @@ interface ScrapeUrlResponse {
   title?: string;
   url?: string;
   ttl?: string;
+  site_name?: string;
 }
 export default ScrapeUrlResponse;

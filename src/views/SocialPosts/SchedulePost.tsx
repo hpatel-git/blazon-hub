@@ -12,6 +12,10 @@ import { useFormik } from 'formik';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+
 // core components
 import GridContainer from '../../components/Grid/GridContainer';
 import List from '@material-ui/core/List';
@@ -19,7 +23,6 @@ import ListItem from '@material-ui/core/ListItem';
 import AddAlert from '@material-ui/icons/AddAlert';
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -101,6 +104,15 @@ const useStyles = makeStyles((theme: Theme) =>
       float: 'left',
       color: '#FFFFFF'
     },
+    actionBar: {
+      flex: 1
+    },
+    floatLeft: {
+      float: 'left'
+    },
+    floatRight: {
+      float: 'right'
+    },
     cardTitleWhite: {
       color: '#FFFFFF',
       marginTop: '0px',
@@ -177,6 +189,7 @@ function SchedulePost(props: SchedulePostProps) {
 
   const handleReset = () => {
     setActiveStep(0);
+    formik.resetForm();
   };
 
   const isNextButtonDisabled = (): boolean => {
@@ -248,48 +261,59 @@ function SchedulePost(props: SchedulePostProps) {
           </Stepper>
           <DialogContent dividers>
             {activeStep === 0 && (
-              <List aria-label="contacts">
-                <ListItem>
+              <List aria-label="contacts" component="div">
+                <ListItem component="div">
                   <PostSettings formik={formik} />
                 </ListItem>
               </List>
             )}
             {activeStep === 1 && (
-              <List aria-label="contacts">
-                <ListItem>
+              <List aria-label="contacts" component="div">
+                <ListItem component="div">
                   <AddPages formik={formik} />
                 </ListItem>
               </List>
             )}
           </DialogContent>
           <DialogActions>
-            <div>
-              {activeStep === steps.length ? (
-                <div>
-                  <Button onClick={handleReset} className={classes.button}>
-                    Reset
-                  </Button>
-                </div>
-              ) : (
-                <div>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className={classes.button}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
+            <div className={classes.actionBar}>
+              <div className={classes.floatLeft}>
+                <IconButton
+                  onClick={handleReset}
+                  className={classes.button}
+                  aria-label="delete"
+                >
+                  <RotateLeftIcon />
+                </IconButton>
+              </div>
+              <div className={classes.floatRight}>
+                <Tooltip title="Start Over Again">
+                  <IconButton
+                    onClick={handleReset}
                     color="primary"
-                    disabled={isNextButtonDisabled()}
-                    onClick={handleNext}
                     className={classes.button}
+                    aria-label="delete"
                   >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </div>
-              )}
+                    <RotateLeftIcon />
+                  </IconButton>
+                </Tooltip>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className={classes.button}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={isNextButtonDisabled()}
+                  onClick={handleNext}
+                  className={classes.button}
+                >
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
+              </div>
             </div>
           </DialogActions>
         </Dialog>

@@ -101,10 +101,11 @@ export default function AddPages(props: PostSettingsProps) {
           <Box
             display="flex"
             justifyContent="center"
+            component="div"
             borderRadius="borderRadius"
             {...defaultProps}
           >
-            <Box>
+            <Box component="div">
               <PageSelectionList
                 formik={formik}
                 left={left}

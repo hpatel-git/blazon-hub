@@ -89,12 +89,6 @@ export default function PostSettings(props: PostSettingsProps) {
   };
   const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-  React.useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current?.focus();
-    }
-  }, []);
-
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>

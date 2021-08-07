@@ -33,6 +33,8 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePostStepIcon, { ColorlibConnector } from './SchedulePostUtils';
 import PostSettings from './PostSettings';
 import AddPages from './AddPages';
+import PostTicker from './PostTicker';
+import { format, addMinutes } from 'date-fns';
 
 const connectToSocialAccountsStyle = (theme: Theme) =>
   createStyles({
@@ -153,7 +155,10 @@ const validationSchema = yup.object({
 });
 function SchedulePost(props: SchedulePostProps) {
   const classes = useStyles();
-
+  // yyyy-MM-ddThh:mm
+  const [defaultTime] = React.useState(
+    format(addMinutes(new Date(), 15), "yyyy-MM-dd'T'HH:mm")
+  );
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -162,7 +167,8 @@ function SchedulePost(props: SchedulePostProps) {
       ogTitle: '',
       ogDescription: '',
       ogUrl: '',
-      selectedPages: []
+      selectedPages: [],
+      publishTime: defaultTime
     },
     validationSchema: validationSchema,
     validate: (values) => {},
@@ -274,18 +280,16 @@ function SchedulePost(props: SchedulePostProps) {
                 </ListItem>
               </List>
             )}
+            {activeStep === 2 && (
+              <List aria-label="contacts" component="div">
+                <ListItem component="div">
+                  <PostTicker formik={formik} />
+                </ListItem>
+              </List>
+            )}
           </DialogContent>
           <DialogActions>
             <div className={classes.actionBar}>
-              <div className={classes.floatLeft}>
-                <IconButton
-                  onClick={handleReset}
-                  className={classes.button}
-                  aria-label="delete"
-                >
-                  <RotateLeftIcon />
-                </IconButton>
-              </div>
               <div className={classes.floatRight}>
                 <Tooltip title="Start Over Again">
                   <IconButton

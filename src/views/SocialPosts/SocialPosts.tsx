@@ -2,10 +2,7 @@ import React from 'react';
 // @material-ui/core components
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
-import AccountTreeIcon from '@material-ui/icons/AccountTree';
-import PagesIcon from '@material-ui/icons/Pages';
+
 import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import purple from '@material-ui/core/colors/purple';
@@ -131,21 +128,6 @@ function SocialPosts(props: any) {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            color="inherit"
-            href="/"
-            onClick={handleRoute}
-            className={classes.link}
-          >
-            <AccountTreeIcon className={classes.icon} />
-            Social Posts
-          </Link>
-          <Link color="inherit" href="#" className={classes.link}>
-            <PagesIcon className={classes.icon} />
-            {params.accountId}
-          </Link>
-        </Breadcrumbs>
         <SchedulePost
           isOpen={isScheduleOpen}
           closeSchedulePost={handleCloseSchdule}
@@ -177,9 +159,7 @@ function SocialPosts(props: any) {
         <Card>
           <CardHeader color="primary">
             <div className={classes.cardTitle}>
-              <h4 className={classes.cardTitleWhite}>
-                Connected Social Accounts
-              </h4>
+              <h4 className={classes.cardTitleWhite}>Upcoming Social Posts</h4>
               <div className={classes.cardCategoryWhite}>
                 Here is a list of all upcoming social posts
               </div>

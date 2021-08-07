@@ -25,7 +25,6 @@ import {
   DialogContent,
   Slide
 } from '@material-ui/core';
-import { useRegisterSocialAccountMutation } from '../../api/saleseazeApi';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePostStepIcon, { ColorlibConnector } from './SchedulePostUtils';
@@ -147,7 +146,7 @@ function SchedulePost(props: SchedulePostProps) {
     enableReinitialize: true,
     initialValues: {
       content: '',
-      ogImage: 'https://material-ui.com/static/logo.png',
+      ogImage: '',
       ogTitle: '',
       ogDescription: '',
       ogUrl: ''
@@ -179,21 +178,6 @@ function SchedulePost(props: SchedulePostProps) {
     setActiveStep(0);
   };
 
-  const [registerSocialAccount, { isLoading }] =
-    useRegisterSocialAccountMutation();
-
-  const showSuccessMessage = (message: string) => {
-    setIsSuccess(true);
-    setSuccessMessage(message);
-  };
-  const handleError = (e: any, defaultMessage: string) => {
-    if ('data' in e) {
-      setErrorMessage(e.data.message);
-    } else {
-      setErrorMessage(defaultMessage);
-    }
-    setIsError(true);
-  };
   const isNextButtonDisabled = (): boolean => {
     if (!formik.dirty) {
       return true;
@@ -261,7 +245,6 @@ function SchedulePost(props: SchedulePostProps) {
           <DialogContent dividers>
             {activeStep === 0 && (
               <List aria-label="contacts">
-                <ListItem>{isLoading && <CircularProgress />}</ListItem>
                 <ListItem>
                   <PostSettings formik={formik} />
                 </ListItem>

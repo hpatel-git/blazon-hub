@@ -23,10 +23,12 @@ function CustomTable({ ...props }: any) {
     hasAction,
     supportedActions,
     onEditAction,
-    onRemoveAction
+    onRemoveAction,
+    hasRowSelector,
+    onRowClick
   } = props;
   const filterData = (data: any) => {
-    if (hasAction || hasLink) {
+    if (hasAction || hasLink || hasRowSelector) {
       return data.filter((p: any, k: any) => k !== 0);
     } else {
       return data;
@@ -54,7 +56,7 @@ function CustomTable({ ...props }: any) {
         <TableBody>
           {tableData.map((prop: any, key: any) => {
             return (
-              <TableRow key={key}>
+              <TableRow key={key} onClick={() => onRowClick(prop)}>
                 {filterData(prop).map((p: any, k: any) => {
                   return (
                     <TableCell className={classes.tableCell} key={k}>

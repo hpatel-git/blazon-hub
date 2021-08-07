@@ -78,5 +78,6 @@ export const {
   useDeListSocialAccountMutation,
   useInitiateSyncPagesMutation,
   useFetchAccountPagesQuery,
+  useLazyFetchAccountPagesQuery,
   useScrapeUrlQuery
 } = saleseazeApi;

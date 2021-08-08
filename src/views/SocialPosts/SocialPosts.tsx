@@ -1,9 +1,7 @@
 import React from 'react';
 // @material-ui/core components
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { useParams } from 'react-router-dom';
 
-import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import purple from '@material-ui/core/colors/purple';
 import MuiCard from '@material-ui/core/Card';
@@ -11,7 +9,7 @@ import MuiCardContent from '@material-ui/core/CardContent';
 import MuiTypography from '@material-ui/core/Typography';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
+import { Grid } from '@material-ui/core';
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -20,7 +18,12 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import AddAlert from '@material-ui/icons/AddAlert';
-import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
+import {
+  Avatar,
+  CircularProgress,
+  IconButton,
+  Tooltip
+} from '@material-ui/core';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePost from './SchedulePost';
 import { useFetchCompanyPostsQuery } from '../../api/saleseazeApi';
@@ -210,34 +213,44 @@ function SocialPosts(props: any) {
             {!fetchCompanyPostsQuery.isFetching &&
               fetchCompanyPostsQuery.data &&
               fetchCompanyPostsQuery.data.content.map((item) => (
-                <MuiCard className={classes.root}>
-                  <SocialPostItem
-                    ogDescription={item.ogDescription}
-                    ogImage={item.ogImage}
-                    ogTitle={item.ogTitle}
-                    ogSiteName={item.ogSiteName}
-                  />
-                  <div className={classes.details}>
-                    <MuiCardContent className={classes.content}>
-                      <MuiTypography component="h5" variant="h5">
-                        Live From Space
-                      </MuiTypography>
-                      <MuiTypography variant="subtitle1" color="textSecondary">
-                        Mac Miller
-                      </MuiTypography>
-                    </MuiCardContent>
-                    <div className={classes.controls}>
-                      <IconButton aria-label="previous">
-                        <SkipPreviousIcon />
-                      </IconButton>
-                      <IconButton aria-label="play/pause">
-                        <PlayArrowIcon className={classes.playIcon} />
-                      </IconButton>
-                      <IconButton aria-label="next">
-                        <SkipPreviousIcon />
-                      </IconButton>
-                    </div>
-                  </div>
+                <MuiCard className={classes.root} key={item.id}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <SocialPostItem
+                        ogDescription={item.ogDescription}
+                        ogImage={item.ogImage}
+                        ogTitle={item.ogTitle}
+                        ogSiteName={item.ogSiteName}
+                        message={item.message}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <div className={classes.details}>
+                        <MuiCardContent className={classes.content}>
+                          <MuiTypography component="h5" variant="h5">
+                            Live From Space
+                          </MuiTypography>
+                          <MuiTypography
+                            variant="subtitle1"
+                            color="textSecondary"
+                          >
+                            Mac Miller
+                          </MuiTypography>
+                        </MuiCardContent>
+                        <div className={classes.controls}>
+                          <IconButton aria-label="previous">
+                            <SkipPreviousIcon />
+                          </IconButton>
+                          <IconButton aria-label="play/pause">
+                            <PlayArrowIcon className={classes.playIcon} />
+                          </IconButton>
+                          <IconButton aria-label="next">
+                            <SkipPreviousIcon />
+                          </IconButton>
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
                 </MuiCard>
               ))}
           </CardBody>

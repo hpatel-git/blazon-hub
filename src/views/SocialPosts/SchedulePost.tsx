@@ -200,7 +200,10 @@ function SchedulePost(props: SchedulePostProps) {
         message: formik.values.content,
         publishTime: formik.values.publishTime,
         pageIds: selectedPages.map((item) => item.id),
-        link: formik.values.ogUrl
+        link: formik.values.ogUrl,
+        ogImage: formik.values.ogImage,
+        ogDescription: formik.values.ogDescription,
+        ogTitle: formik.values.ogTitle
       };
       await publishPost(publishRequest).unwrap();
       showSuccessMessage('Content Publish successfully');

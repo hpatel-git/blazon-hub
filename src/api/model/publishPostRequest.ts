@@ -3,6 +3,9 @@ interface PublishPostRequest {
   message: string;
   publishTime: string;
   pageIds: string[];
+  ogImage?: string;
+  ogTitle?: string;
+  ogDescription?: string;
 }
 
 export interface PublishPost {

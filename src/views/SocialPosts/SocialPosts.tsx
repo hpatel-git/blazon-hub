@@ -113,8 +113,11 @@ function SocialPosts(props: any) {
     setIsSuccess(true);
     setSuccessMessage(message);
   };
-  const handleCloseSchdule = () => {
+  const handleCloseSchdule = (message?: string) => {
     setIsScheduleOpen(false);
+    if (message) {
+      showSuccessMessage(message!!);
+    }
   };
   const handleError = (e: any, defaultMessage: string) => {
     if ('data' in e) {

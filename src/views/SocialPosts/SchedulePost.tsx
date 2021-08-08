@@ -149,7 +149,7 @@ function getSteps() {
 
 interface SchedulePostProps {
   isOpen: boolean;
-  closeSchedulePost: () => void;
+  closeSchedulePost: (message?: string) => void;
 }
 const validationSchema = yup.object({
   content: yup
@@ -204,7 +204,8 @@ function SchedulePost(props: SchedulePostProps) {
       };
       await publishPost(publishRequest).unwrap();
       showSuccessMessage('Content Publish successfully');
-      props.closeSchedulePost();
+      handleReset();
+      props.closeSchedulePost('Content Publish successfully');
     } catch (e) {
       handleError(e, 'Error while publishing content');
     }

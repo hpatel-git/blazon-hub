@@ -183,7 +183,7 @@ export default function PostSettings(props: PostSettingsProps) {
                 <Linkify>{formik.values.content}</Linkify>
               </Typography>
             </CardContent>
-            <PostImagePreview ogImage={formik.values.ogUrl} />
+            <PostImagePreview ogImage={formik.values.ogUrl} formik={formik} />
             <CardActions disableSpacing>
               <IconButton aria-label="add to favorites">
                 <FavoriteIcon />

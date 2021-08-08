@@ -27,7 +27,25 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 interface PostImagePreviewProps {
   ogImage: string;
+  formik: any;
 }
+interface UpdateScrapDetailProps {
+  scrapData: ScrapeUrlResponse;
+  formik: any;
+}
+class UpdateScrapDetails extends React.Component<UpdateScrapDetailProps> {
+  componentDidMount() {
+    const { scrapData, formik } = this.props;
+    formik.setFieldValue('ogImage', scrapData.image);
+    formik.setFieldValue('ogSiteName', scrapData.site_name);
+    formik.setFieldValue('ogDescription', scrapData.description);
+    formik.setFieldValue('ogTitle', scrapData.title);
+  }
+  render() {
+    return <React.Fragment />;
+  }
+}
+
 export default function PostImagePreview(props: PostImagePreviewProps) {
   const defaultProps = {
     bgcolor: '#D5D9DC',
@@ -49,7 +67,7 @@ export default function PostImagePreview(props: PostImagePreviewProps) {
     return true;
   };
   const classes = useStyles();
-  const { ogImage } = props;
+  const { ogImage, formik } = props;
   const scrapeUrlQuery = useScrapeUrlQuery(ogImage);
 
   return (
@@ -63,6 +81,12 @@ export default function PostImagePreview(props: PostImagePreviewProps) {
         isScraperDisplayRequired(scrapeUrlQuery.data) && (
           <Box borderRadius="borderRadius" {...defaultProps}>
             <Grid container>
+              {!scrapeUrlQuery.isFetching && scrapeUrlQuery.data && (
+                <UpdateScrapDetails
+                  formik={formik}
+                  scrapData={scrapeUrlQuery.data}
+                />
+              )}
               {!scrapeUrlQuery.isFetching &&
                 scrapeUrlQuery.data &&
                 scrapeUrlQuery.data.image && (

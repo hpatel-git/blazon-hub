@@ -5,11 +5,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import purple from '@material-ui/core/colors/purple';
 import MuiCard from '@material-ui/core/Card';
-import MuiCardContent from '@material-ui/core/CardContent';
-import MuiTypography from '@material-ui/core/Typography';
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import { Grid } from '@material-ui/core';
+import { FormControl, FormLabel, Grid, Typography } from '@material-ui/core';
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -28,6 +24,7 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePost from './SchedulePost';
 import { useFetchCompanyPostsQuery } from '../../api/saleseazeApi';
 import SocialPostItem from './SocialPostItem';
+import { PublishDetails } from '../../api/model/publishPostRequest';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -106,18 +103,13 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flex: '1 0 auto'
     },
-    cover: {
-      width: 151
+    formControl: {
+      margin: theme.spacing(3),
+      justifyContent: 'center',
+      alignContent: 'center'
     },
-    controls: {
-      display: 'flex',
-      alignItems: 'center',
-      paddingLeft: theme.spacing(1),
-      paddingBottom: theme.spacing(1)
-    },
-    playIcon: {
-      height: 38,
-      width: 38
+    bold: {
+      fontWeight: 600
     }
   })
 );
@@ -225,30 +217,123 @@ function SocialPosts(props: any) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <div className={classes.details}>
-                        <MuiCardContent className={classes.content}>
-                          <MuiTypography component="h5" variant="h5">
-                            Live From Space
-                          </MuiTypography>
-                          <MuiTypography
-                            variant="subtitle1"
-                            color="textSecondary"
+                      <Grid container>
+                        <Grid item xs={12}>
+                          <FormControl
+                            component="fieldset"
+                            color="primary"
+                            className={classes.formControl}
                           >
-                            Mac Miller
-                          </MuiTypography>
-                        </MuiCardContent>
-                        <div className={classes.controls}>
-                          <IconButton aria-label="previous">
-                            <SkipPreviousIcon />
-                          </IconButton>
-                          <IconButton aria-label="play/pause">
-                            <PlayArrowIcon className={classes.playIcon} />
-                          </IconButton>
-                          <IconButton aria-label="next">
-                            <SkipPreviousIcon />
-                          </IconButton>
-                        </div>
-                      </div>
+                            <FormLabel component="legend">
+                              Publish Details
+                            </FormLabel>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Grid container>
+                            <Grid item xs={3}>
+                              <Typography
+                                variant="body2"
+                                display="block"
+                                className={classes.bold}
+                                gutterBottom
+                              >
+                                Published By:
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={9}>
+                              <Typography
+                                variant="body2"
+                                display="block"
+                                gutterBottom
+                              >
+                                {item.createdBy}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <FormControl
+                            component="fieldset"
+                            color="primary"
+                            //className={classes.formControl}
+                          >
+                            <FormLabel component="legend">
+                              Page Details
+                            </FormLabel>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Grid container>
+                            <Grid item xs={3}>
+                              <Typography
+                                variant="body2"
+                                display="block"
+                                className={classes.bold}
+                                gutterBottom
+                              >
+                                Page Name
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Typography
+                                variant="body2"
+                                display="block"
+                                className={classes.bold}
+                                gutterBottom
+                              >
+                                Status
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Typography
+                                variant="body2"
+                                display="block"
+                                className={classes.bold}
+                                gutterBottom
+                              >
+                                Response Status
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        {item.publishDetails &&
+                          item.publishDetails.map(
+                            (publishDetail: PublishDetails) => (
+                              <Grid item xs={12}>
+                                <Grid container>
+                                  <Grid item xs={3}>
+                                    <Typography
+                                      variant="body2"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {publishDetail.pageName}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item xs={3}>
+                                    <Typography
+                                      variant="body2"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {publishDetail.status}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item xs={3}>
+                                    <Typography
+                                      variant="body2"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {publishDetail.responseStatus}
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                            )
+                          )}
+                      </Grid>
                     </Grid>
                   </Grid>
                 </MuiCard>

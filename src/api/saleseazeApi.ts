@@ -8,6 +8,7 @@ import { SocialAccountsResponse } from './model/socialAccount';
 import { FacebookPageResponse } from './model/facebookPage';
 import ScrapeUrlResponse from './model/scrapeUrlResponse';
 import PublishPostRequest, {
+  PublishPostPageResponse,
   PublishPostResponse
 } from './model/publishPostRequest';
 
@@ -76,6 +77,9 @@ export const saleseazeApi = createApi({
         method: 'POST',
         body
       })
+    }),
+    fetchCompanyPosts: builder.query<PublishPostPageResponse, void>({
+      query: () => `publish_posts`
     })
   })
 });
@@ -90,5 +94,6 @@ export const {
   useFetchAccountPagesQuery,
   useLazyFetchAccountPagesQuery,
   useScrapeUrlQuery,
-  usePublishPostMutation
+  usePublishPostMutation,
+  useFetchCompanyPostsQuery
 } = saleseazeApi;

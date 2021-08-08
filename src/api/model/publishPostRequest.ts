@@ -6,6 +6,7 @@ interface PublishPostRequest {
   ogImage?: string;
   ogTitle?: string;
   ogDescription?: string;
+  ogSiteName?: string;
 }
 
 export interface PublishPost {
@@ -22,12 +23,17 @@ export interface PublishPost {
   createdBy: string;
   modifiedDate: string;
   modifiedBy: string;
+  ogImage?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogSiteName?: string;
+}
+export interface PublishPostPageResponse {
+  content: PublishPost[];
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
 }
 export type PublishPostResponse = PublishPost[];
+
 export default PublishPostRequest;
-/**
- *  val message: String,
-    val link: String?,
-    var publishTime: String,
-    var pageIds: List<String>
- */

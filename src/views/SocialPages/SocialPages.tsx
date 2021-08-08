@@ -198,7 +198,11 @@ function SocialPages(props: any) {
           </CardHeader>
 
           <CardBody>
-            {fetchAccountPagesQuery.isFetching && <CircularProgress />}
+            {fetchAccountPagesQuery.isFetching && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+            )}
             {!fetchAccountPagesQuery.isFetching &&
               fetchAccountPagesQuery.data && (
                 <Table

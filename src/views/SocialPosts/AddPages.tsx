@@ -117,7 +117,9 @@ export default function AddPages(props: PostSettingsProps) {
         </div>
       </CardBody>
       {(socialAccountQuery.isFetching || result.isFetching) && (
-        <CircularProgress />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </div>
       )}
     </div>
   );

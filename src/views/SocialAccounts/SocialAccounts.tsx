@@ -403,7 +403,11 @@ function SocialAccounts(props: any) {
         <DialogContent dividers>
           <List className={classes.root} aria-label="contacts">
             <ListItem>
-              {isLoading && <CircularProgress />}
+              {isLoading && (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <CircularProgress />
+                </div>
+              )}
               <div id="facebookWrapper" className={classes.facebookIconStyle}>
                 <ReactFacebookLogin
                   appId={Config.root.SALESEAZE_FB_APP_ID}

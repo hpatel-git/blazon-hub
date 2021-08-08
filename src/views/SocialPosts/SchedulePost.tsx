@@ -170,6 +170,7 @@ function SchedulePost(props: SchedulePostProps) {
       ogImage: '',
       ogTitle: '',
       ogDescription: '',
+      ogSiteName: '',
       ogUrl: '',
       selectedPages: [],
       publishTime: defaultTime
@@ -203,7 +204,8 @@ function SchedulePost(props: SchedulePostProps) {
         link: formik.values.ogUrl,
         ogImage: formik.values.ogImage,
         ogDescription: formik.values.ogDescription,
-        ogTitle: formik.values.ogTitle
+        ogTitle: formik.values.ogTitle,
+        ogSiteName: formik.values.ogSiteName
       };
       await publishPost(publishRequest).unwrap();
       showSuccessMessage('Content Publish successfully');
@@ -302,7 +304,11 @@ function SchedulePost(props: SchedulePostProps) {
             ))}
           </Stepper>
           <DialogContent dividers>
-            {isUpdating && <CircularProgress />}
+            {isUpdating && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+            )}
             {activeStep === 0 && (
               <List aria-label="contacts" component="div">
                 <ListItem component="div">

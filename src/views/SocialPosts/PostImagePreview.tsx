@@ -54,7 +54,11 @@ export default function PostImagePreview(props: PostImagePreviewProps) {
 
   return (
     <React.Fragment>
-      {scrapeUrlQuery.isFetching && <CircularProgress />}
+      {scrapeUrlQuery.isFetching && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </div>
+      )}
       {!scrapeUrlQuery.isFetching &&
         isScraperDisplayRequired(scrapeUrlQuery.data) && (
           <Box borderRadius="borderRadius" {...defaultProps}>

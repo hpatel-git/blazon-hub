@@ -18,6 +18,7 @@ import AddAlert from '@material-ui/icons/AddAlert';
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePost from './SchedulePost';
+import { useFetchCompanyPostsQuery } from '../../api/saleseazeApi';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,20 +87,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-type SocialPageParam = {
-  accountId: string;
-};
 
 function SocialPosts(props: any) {
   const classes = useStyles();
-  const history = useHistory();
-  const params = useParams<SocialPageParam>();
-  const handleRoute = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    history.push('/admin/accounts');
-    event.preventDefault();
-  };
+
+  const fetchCompanyPostsQuery = useFetchCompanyPostsQuery();
 
   const [isScheduleOpen, setIsScheduleOpen] = React.useState(false);
 
@@ -178,7 +170,18 @@ function SocialPosts(props: any) {
               </Tooltip>
             </div>
           </CardHeader>
-          <CardBody />
+          <CardBody>
+            {fetchCompanyPostsQuery.isFetching && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+            )}
+            {!fetchCompanyPostsQuery.isFetching &&
+              fetchCompanyPostsQuery.data &&
+              fetchCompanyPostsQuery.data.content.map((item) => (
+                <div>{item.id}</div>
+              ))}
+          </CardBody>
         </Card>
       </GridItem>
     </GridContainer>

@@ -23,6 +23,7 @@ import ListItem from '@material-ui/core/ListItem';
 import AddAlert from '@material-ui/icons/AddAlert';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,6 +36,9 @@ import PostSettings from './PostSettings';
 import AddPages from './AddPages';
 import PostTicker from './PostTicker';
 import { format, addMinutes } from 'date-fns';
+import { usePublishPostMutation } from '../../api/saleseazeApi';
+import PublishPostRequest from '../../api/model/publishPostRequest';
+import FacebookPage from '../../api/model/facebookPage';
 
 const connectToSocialAccountsStyle = (theme: Theme) =>
   createStyles({
@@ -174,7 +178,7 @@ function SchedulePost(props: SchedulePostProps) {
     validate: (values) => {},
     onSubmit: (values) => {}
   });
-
+  const [publishPost, { isLoading: isUpdating }] = usePublishPostMutation();
   const [isError, setIsError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -189,6 +193,34 @@ function SchedulePost(props: SchedulePostProps) {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  const handlePublish = async () => {
+    try {
+      const selectedPages = formik.values.selectedPages as FacebookPage[];
+      const publishRequest: PublishPostRequest = {
+        message: formik.values.content,
+        publishTime: formik.values.publishTime,
+        pageIds: selectedPages.map((item) => item.id),
+        link: formik.values.ogUrl
+      };
+      await publishPost(publishRequest).unwrap();
+      showSuccessMessage('Content Publish successfully');
+      props.closeSchedulePost();
+    } catch (e) {
+      handleError(e, 'Error while publishing content');
+    }
+  };
+  const showSuccessMessage = (message: string) => {
+    setIsSuccess(true);
+    setSuccessMessage(message);
+  };
+  const handleError = (e: any, defaultMessage: string) => {
+    if ('data' in e) {
+      setErrorMessage(e.data.message);
+    } else {
+      setErrorMessage(defaultMessage);
+    }
+    setIsError(true);
+  };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -266,6 +298,7 @@ function SchedulePost(props: SchedulePostProps) {
             ))}
           </Stepper>
           <DialogContent dividers>
+            {isUpdating && <CircularProgress />}
             {activeStep === 0 && (
               <List aria-label="contacts" component="div">
                 <ListItem component="div">
@@ -313,7 +346,7 @@ function SchedulePost(props: SchedulePostProps) {
                     variant="contained"
                     color="primary"
                     disabled={isNextButtonDisabled()}
-                    onClick={handleNext}
+                    onClick={handlePublish}
                     className={classes.button}
                   >
                     Publish

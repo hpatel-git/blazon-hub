@@ -7,6 +7,9 @@ import RegisterSocialAccount from './model/registerSocialAccount';
 import { SocialAccountsResponse } from './model/socialAccount';
 import { FacebookPageResponse } from './model/facebookPage';
 import ScrapeUrlResponse from './model/scrapeUrlResponse';
+import PublishPostRequest, {
+  PublishPostResponse
+} from './model/publishPostRequest';
 
 export const saleseazeApi = createApi({
   reducerPath: 'saleseazeApi',
@@ -63,6 +66,16 @@ export const saleseazeApi = createApi({
     }),
     scrapeUrl: builder.query<ScrapeUrlResponse, string>({
       query: (q: string) => `tools/scrap_urls?url=${q}`
+    }),
+    publishPost: builder.mutation<
+      PublishPostResponse,
+      Partial<PublishPostRequest>
+    >({
+      query: ({ ...body }) => ({
+        url: `publish_posts`,
+        method: 'POST',
+        body
+      })
     })
   })
 });
@@ -76,5 +89,6 @@ export const {
   useInitiateSyncPagesMutation,
   useFetchAccountPagesQuery,
   useLazyFetchAccountPagesQuery,
-  useScrapeUrlQuery
+  useScrapeUrlQuery,
+  usePublishPostMutation
 } = saleseazeApi;

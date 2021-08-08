@@ -56,7 +56,10 @@ function CustomTable({ ...props }: any) {
         <TableBody>
           {tableData.map((prop: any, key: any) => {
             return (
-              <TableRow key={key} onClick={() => onRowClick(prop)}>
+              <TableRow
+                key={key}
+                onClick={() => onRowClick && onRowClick(prop)}
+              >
                 {filterData(prop).map((p: any, k: any) => {
                   return (
                     <TableCell className={classes.tableCell} key={k}>

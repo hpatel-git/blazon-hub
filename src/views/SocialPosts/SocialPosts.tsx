@@ -6,7 +6,12 @@ import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import purple from '@material-ui/core/colors/purple';
-
+import MuiCard from '@material-ui/core/Card';
+import MuiCardContent from '@material-ui/core/CardContent';
+import MuiTypography from '@material-ui/core/Typography';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
 // core components
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -85,6 +90,31 @@ const useStyles = makeStyles((theme: Theme) =>
         fontWeight: 400,
         lineHeight: 1
       }
+    },
+    root: {
+      display: 'flex',
+      margin: theme.spacing(2)
+    },
+    details: {
+      display: 'flex',
+      width: 500,
+      flexDirection: 'column'
+    },
+    content: {
+      flex: '1 0 auto'
+    },
+    cover: {
+      width: 151
+    },
+    controls: {
+      display: 'flex',
+      alignItems: 'center',
+      paddingLeft: theme.spacing(1),
+      paddingBottom: theme.spacing(1)
+    },
+    playIcon: {
+      height: 38,
+      width: 38
     }
   })
 );
@@ -180,14 +210,35 @@ function SocialPosts(props: any) {
             {!fetchCompanyPostsQuery.isFetching &&
               fetchCompanyPostsQuery.data &&
               fetchCompanyPostsQuery.data.content.map((item) => (
-                <div>
+                <MuiCard className={classes.root}>
                   <SocialPostItem
                     ogDescription={item.ogDescription}
                     ogImage={item.ogImage}
                     ogTitle={item.ogTitle}
                     ogSiteName={item.ogSiteName}
                   />
-                </div>
+                  <div className={classes.details}>
+                    <MuiCardContent className={classes.content}>
+                      <MuiTypography component="h5" variant="h5">
+                        Live From Space
+                      </MuiTypography>
+                      <MuiTypography variant="subtitle1" color="textSecondary">
+                        Mac Miller
+                      </MuiTypography>
+                    </MuiCardContent>
+                    <div className={classes.controls}>
+                      <IconButton aria-label="previous">
+                        <SkipPreviousIcon />
+                      </IconButton>
+                      <IconButton aria-label="play/pause">
+                        <PlayArrowIcon className={classes.playIcon} />
+                      </IconButton>
+                      <IconButton aria-label="next">
+                        <SkipPreviousIcon />
+                      </IconButton>
+                    </div>
+                  </div>
+                </MuiCard>
               ))}
           </CardBody>
         </Card>

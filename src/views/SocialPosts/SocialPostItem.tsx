@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     media: {
       height: 0,
-      paddingTop: '56.25%' // 16:9
+      width: 300,
+      paddingTop: '23%', // 16:9,
+      marginTop: '30'
     },
     detailWrapper: {
       margin: theme.spacing(3)
@@ -17,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold'
     },
     description: {
+      width: 300,
       textOverflow: 'ellipsis',
       overflow: 'hidden',
       whiteSpace: 'nowrap'
@@ -33,6 +36,7 @@ export default function SocialPostItem(props: SocialPostItemProps) {
   const defaultProps = {
     bgcolor: '#D5D9DC',
     borderColor: '#D5D9DC',
+    width: 320,
     m: 1,
     border: 1,
     shadows: 12
@@ -54,29 +58,27 @@ export default function SocialPostItem(props: SocialPostItemProps) {
   return (
     <React.Fragment>
       {isScraperDisplayRequired() && (
-        <Box borderRadius="borderRadius" {...defaultProps}>
-          <Grid container>
-            {ogImage && (
-              <Grid item xs={12}>
-                <CardMedia
-                  className={classes.media}
-                  image={ogImage}
-                  title="Paella dish"
-                />
-              </Grid>
-            )}
+        <Grid container>
+          {ogImage && (
             <Grid item xs={12}>
-              <div className={classes.detailWrapper}>
-                <div>{ogSiteName ? ogSiteName : ''}</div>
-                <div className={classes.title}>{ogTitle ? ogTitle : ''}</div>
-
-                <div className={classes.description}>
-                  {ogDescription ? ogDescription : ''}
-                </div>
-              </div>
+              <CardMedia
+                className={classes.media}
+                image={ogImage}
+                title="Paella dish"
+              />
             </Grid>
+          )}
+          <Grid item xs={12}>
+            <div className={classes.detailWrapper}>
+              <div>{ogSiteName ? ogSiteName : ''}</div>
+              <div className={classes.title}>{ogTitle ? ogTitle : ''}</div>
+
+              <div className={classes.description}>
+                {ogDescription ? ogDescription : ''}
+              </div>
+            </div>
           </Grid>
-        </Box>
+        </Grid>
       )}
     </React.Fragment>
   );

@@ -19,6 +19,7 @@ import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import SchedulePost from './SchedulePost';
 import { useFetchCompanyPostsQuery } from '../../api/saleseazeApi';
+import SocialPostItem from './SocialPostItem';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -179,7 +180,14 @@ function SocialPosts(props: any) {
             {!fetchCompanyPostsQuery.isFetching &&
               fetchCompanyPostsQuery.data &&
               fetchCompanyPostsQuery.data.content.map((item) => (
-                <div>{item.id}</div>
+                <div>
+                  <SocialPostItem
+                    ogDescription={item.ogDescription}
+                    ogImage={item.ogImage}
+                    ogTitle={item.ogTitle}
+                    ogSiteName={item.ogSiteName}
+                  />
+                </div>
               ))}
           </CardBody>
         </Card>

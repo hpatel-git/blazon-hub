@@ -11,11 +11,24 @@ interface PublishPostRequest {
 
 export interface PublishPost {
   id: string;
-  accountId: string;
   companyId: string;
-  pageId: string;
   message: string;
   link: string;
+  ogImage?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogSiteName?: string;
+  publishDetails: PublishDetails[];
+  status: string;
+  createdDate: string;
+  createdBy: string;
+  modifiedDate: string;
+  modifiedBy: string;
+}
+export interface PublishDetails {
+  accountId: string;
+  pageId: string;
+  pageName: string;
   response: any;
   responseStatus: string;
   status: string;
@@ -23,10 +36,6 @@ export interface PublishPost {
   createdBy: string;
   modifiedDate: string;
   modifiedBy: string;
-  ogImage?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogSiteName?: string;
 }
 export interface PublishPostPageResponse {
   content: PublishPost[];
